@@ -45,3 +45,13 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
+/*
+    Feature
+        Home (Bottom Bar)
+        Weather
+        Records
+        Login
+        Account
+
+ */
