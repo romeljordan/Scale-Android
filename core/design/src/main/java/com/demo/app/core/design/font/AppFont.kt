@@ -5,7 +5,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.demo.app.core.design.R
 
-val poppinsFont = FontFamily(
+val poppinsFontFamily = FontFamily(
     listOf(
         Font(R.font.Poppins_Black, weight = FontWeight.Black),
         Font(R.font.Poppins_ExtraBold, weight = FontWeight.ExtraBold),
