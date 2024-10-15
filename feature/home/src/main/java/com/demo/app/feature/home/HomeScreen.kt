@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.demo.app.feature.home.navigation.HomeScreenNavGraph
 import com.demo.app.feature.home.ui.BottomNavigationBar
+import com.demo.app.feature.weather.navigation.WEATHER_NAV_ROUTE
 
 @Composable
 internal fun HomeScreen() {
@@ -18,7 +20,11 @@ internal fun HomeScreen() {
             BottomNavigationBar(navController)
         }
     ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding))
+        HomeScreenNavGraph(
+            navHostController = navController,
+            startDestination = WEATHER_NAV_ROUTE,
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
