@@ -1,7 +1,9 @@
 package com.demo.app.core.design.theme
 
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.demo.app.core.design.font.poppinsFontFamily
 
 data class AppTypography(
@@ -19,7 +21,9 @@ data class AppTypography(
 val appTypography = AppTypography(
     titleLarge = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 32.sp,
+        platformStyle = PlatformTextStyle()
     ),
     titleMedium = TextStyle(
         fontFamily = poppinsFontFamily,
