@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class OpenWeatherUseCaseModule {
     @Binds
-    abstract fun bindsOpenWeatherUseCase(openWeatherImpl: OpenWeatherUseCaseImpl): OpenWeatherUseCase
+    abstract fun bindsOpenWeatherUseCase(openWeatherUseCaseImpl: OpenWeatherUseCaseImpl): OpenWeatherUseCase
 }
