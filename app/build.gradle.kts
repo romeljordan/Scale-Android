@@ -72,6 +72,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(project(":data:core"))
+    implementation(project(":domain:core"))
     implementation(project(":feature:home"))
     implementation(project(":feature:login"))
 }
