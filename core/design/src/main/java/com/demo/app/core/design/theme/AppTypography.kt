@@ -27,34 +27,49 @@ val appTypography = AppTypography(
     ),
     titleMedium = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
+        fontSize = 28.sp
     ),
     titleSmall = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+        platformStyle = PlatformTextStyle()
     ),
     bodyLarge = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.SemiBold
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 22.sp,
+        platformStyle = PlatformTextStyle()
     ),
     bodyMedium = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+        platformStyle = PlatformTextStyle()
     ),
     bodySmall = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        platformStyle = PlatformTextStyle()
     ),
     labelLarge = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        platformStyle = PlatformTextStyle()
     ),
     labelMedium = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        platformStyle = PlatformTextStyle()
     ),
     labelSmall = TextStyle(
         fontFamily = poppinsFontFamily,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        platformStyle = PlatformTextStyle()
     )
 )
