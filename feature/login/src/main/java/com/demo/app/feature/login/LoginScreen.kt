@@ -85,7 +85,10 @@ fun LoginScreen() {
                 visible = hasAnAccount,
             ) {
                 LoginCredentialsInputUi(
-                    onSignUpListener = { hasAnAccount = false }
+                    onShowSignUpInput = { hasAnAccount = false },
+                    onLogin = { _, _ ->
+                        // TODO: add viewmodel
+                    }
                 )
             }
 
@@ -93,7 +96,10 @@ fun LoginScreen() {
                 visible = !hasAnAccount
             ) {
                 SignUpCredentialsInputUi(
-                    onLogInListener = { hasAnAccount = true }
+                    onShowLoginInput = { hasAnAccount = true },
+                    onSignUp = { _, _ ->
+                        // TODO: add viewmodel
+                    }
                 )
             }
         }

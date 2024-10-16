@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,27 +26,31 @@ import com.demo.app.core.design.theme.appTypography
 
 @Composable
 internal fun LoginCredentialsInputUi(
-    onSignUpListener: () -> Unit
+    onShowSignUpInput: () -> Unit,
+    onLogin: (username: String, password: String) -> Unit
 ) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxWidth(0.85f),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         InputTextField(
-            currentValue = "",
+            currentValue = username,
             placeholderText = "Username",
             leadingIcon = R.drawable.ic_person_24,
-            onValueChange = {  }
+            onValueChange = { username = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         InputTextField(
-            currentValue = "",
+            currentValue = password,
             placeholderText = "Password",
             isPassword = true,
             leadingIcon = R.drawable.ic_lock_24,
-            onValueChange = {  }
+            onValueChange = { password = it }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -59,7 +67,7 @@ internal fun LoginCredentialsInputUi(
                 )
             )
             TextButton(
-                onClick = { onSignUpListener.invoke() },
+                onClick = { onShowSignUpInput.invoke() },
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
@@ -78,7 +86,9 @@ internal fun LoginCredentialsInputUi(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(AppColor.blue),
-            onClick = { }
+            onClick = {
+                onLogin.invoke(username, password)
+            }
         ) {
             Text(
                 text = "LOG IN",

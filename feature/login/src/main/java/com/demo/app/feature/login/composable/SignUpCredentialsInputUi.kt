@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,37 +26,42 @@ import com.demo.app.core.design.theme.appTypography
 
 @Composable
 internal fun SignUpCredentialsInputUi(
-    onLogInListener: () -> Unit
+    onShowLoginInput: () -> Unit,
+    onSignUp: (username: String, password: String) -> Unit
 ) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var retypePassword by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier.fillMaxWidth(0.85f),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         InputTextField(
-            currentValue = "",
+            currentValue = username,
             placeholderText = "Username",
             leadingIcon = R.drawable.ic_person_24,
-            onValueChange = {  }
+            onValueChange = { username = it }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         InputTextField(
-            currentValue = "",
+            currentValue = password,
             placeholderText = "Password",
             isPassword = true,
             leadingIcon = R.drawable.ic_lock_24,
-            onValueChange = {  }
+            onValueChange = { password = it }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         InputTextField(
-            currentValue = "",
+            currentValue = retypePassword,
             placeholderText = "Re-type Password",
             isPassword = true,
             leadingIcon = R.drawable.ic_lock_24,
-            onValueChange = {  }
+            onValueChange = { retypePassword = it }
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -69,7 +78,7 @@ internal fun SignUpCredentialsInputUi(
                 )
             )
             TextButton(
-                onClick = { onLogInListener.invoke() },
+                onClick = { onShowLoginInput.invoke() },
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Text(
@@ -88,7 +97,11 @@ internal fun SignUpCredentialsInputUi(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(AppColor.blue),
-            onClick = { }
+            onClick = {
+                if (password == retypePassword) {
+                    onSignUp.invoke(username, password)
+                }
+            }
         ) {
             Text(
                 text = "SIGN UP",
