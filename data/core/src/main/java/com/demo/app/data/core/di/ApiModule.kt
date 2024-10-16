@@ -1,5 +1,6 @@
 package com.demo.app.data.core.di
 
+import com.demo.app.data.core.api.AuthApi
 import com.demo.app.data.core.api.OpenWeatherApi
 import dagger.Module
 import dagger.Provides
@@ -15,4 +16,9 @@ object ApiModule {
     @Singleton
     fun providesOpenWeatherApi(retrofit: Retrofit): OpenWeatherApi =
         retrofit.create(OpenWeatherApi::class.java)
+
+    @Provides
+    @Singleton
+    fun providesAuthApi(@AuthRetrofit retrofit: Retrofit): AuthApi =
+        retrofit.create(AuthApi::class.java)
 }
