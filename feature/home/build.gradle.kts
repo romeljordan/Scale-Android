@@ -59,6 +59,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(project(":core:design"))
+    implementation(project(":feature:core"))
     implementation(project(":feature:records"))
     implementation(project(":feature:weather"))
 }

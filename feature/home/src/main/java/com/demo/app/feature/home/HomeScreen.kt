@@ -1,6 +1,5 @@
 package com.demo.app.feature.home
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -21,7 +20,7 @@ internal fun HomeScreen() {
         }
     ) { innerPadding ->
         HomeScreenNavGraph(
-            navHostController = navController,
+            navController = navController,
             startDestination = WEATHER_NAV_ROUTE,
             modifier = Modifier.padding(innerPadding)
         )
