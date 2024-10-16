@@ -1,7 +1,10 @@
 package com.demo.app.feature.weather
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,7 +41,8 @@ internal fun WeatherScreen() {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .padding(24.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text(
                 text = "Hello, username!",
@@ -46,6 +52,25 @@ internal fun WeatherScreen() {
             )
 
             WeatherPreviewUi()
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                TimeInfoBoxUi(
+                    modifier = Modifier.weight(1f),
+                    icon = R.drawable.ic_sunny_filled_24,
+                    title = "Sunrise",
+                    dateMillis = 0L
+                )
+
+                TimeInfoBoxUi(
+                    modifier = Modifier.weight(1f),
+                    icon = R.drawable.ic_sunny_outline_24,
+                    title = "Sunset",
+                    dateMillis = 0L
+                )
+            }
         }
     }
 }
@@ -139,13 +164,56 @@ internal fun WeatherPreviewUi(
         }
 
         Text(
-            text = "Day, Mon 0",
-            style = appTypography.labelMedium.copy(
+            text = "Thu, Oct 17",
+            style = appTypography.labelSmall.copy(
                 color = Color.White
             ),
             modifier = Modifier
                 .padding(end = 16.dp)
                 .align(Alignment.End)
+        )
+    }
+}
+
+// TODO: move to separate file
+@Composable
+internal fun TimeInfoBoxUi(
+    @DrawableRes icon: Int,
+    title: String,
+    dateMillis: Long,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .border(
+                width = 1.dp,
+                color = Color.White,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier.size(40.dp),
+            painter = painterResource(icon),
+            contentDescription = null
+        )
+
+        Text(
+            text = "5:00 AM", // TODO: add converter
+            style = appTypography.titleMedium.copy(
+                color = Color.White,
+                fontWeight = FontWeight.Medium
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Clip
+        )
+
+        Text(
+            text = title,
+            style = appTypography.labelMedium.copy(
+                color = Color.White
+            )
         )
     }
 }
