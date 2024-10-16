@@ -1,6 +1,7 @@
 package com.demo.app.data.core.di
 
 import com.demo.app.data.core.BuildConfig
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,4 +48,10 @@ object NetworkModule {
                 GsonConverterFactory.create()
             )
             .build()
+
+    @Provides
+    @Singleton
+    fun providesGson(): Gson {
+        return Gson()
+    }
 }

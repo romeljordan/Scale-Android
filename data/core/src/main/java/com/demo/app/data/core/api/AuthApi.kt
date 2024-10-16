@@ -31,10 +31,10 @@ interface AuthApi {
     @GET("/logs/{user_id}")
     suspend fun logs(
         @Path("user_id") userId: Int
-    )
+    ): Response<Boolean>
 
     @GET("/session/{session_id}")
     suspend fun session(
         @Path("session_id") sessionId: Int
-    )
+    ): Response<Boolean>
 }
