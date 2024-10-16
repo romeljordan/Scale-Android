@@ -1,8 +1,7 @@
 package com.demo.app.feature.login
 
-import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,32 +11,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.demo.app.core.design.R
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
-import com.demo.app.feature.login.composable.InputTextField
+import com.demo.app.feature.login.composable.LoginCredentialsInputUi
+import com.demo.app.feature.login.composable.SignUpCredentialsInputUi
 
 @Composable
 fun LoginScreen() {
+    // TODO: update data
+    var hasAnAccount by remember { mutableStateOf(true) }
+
     Scaffold(
         containerColor = AppColor.primaryBlue
     ) { innerPadding ->
@@ -82,42 +80,21 @@ fun LoginScreen() {
                 )
             }
 
-            Column(
-                modifier = Modifier.fillMaxWidth(0.85f),
-                horizontalAlignment = Alignment.CenterHorizontally
+            // TODO: fix start and exit animation (slide in and out)
+            AnimatedVisibility(
+                visible = hasAnAccount,
             ) {
-                InputTextField(
-                    currentValue = "",
-                    placeholderText = "Username",
-                    leadingIcon = R.drawable.ic_person_24,
-                    onValueChange = {  }
+                LoginCredentialsInputUi(
+                    onSignUpListener = { hasAnAccount = false }
                 )
+            }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                InputTextField(
-                    currentValue = "",
-                    placeholderText = "Password",
-                    isPassword = true,
-                    leadingIcon = R.drawable.ic_lock_24,
-                    onValueChange = {  }
+            AnimatedVisibility(
+                visible = !hasAnAccount
+            ) {
+                SignUpCredentialsInputUi(
+                    onLogInListener = { hasAnAccount = true }
                 )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                TextButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(AppColor.blue),
-                    onClick = { }
-                ) {
-                    Text(
-                        text = "LOG IN",
-                        style = appTypography.labelMedium.copy(
-                            color = Color.White
-                        )
-                    )
-                }
             }
         }
     }
