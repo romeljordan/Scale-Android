@@ -29,7 +29,10 @@ internal fun BottomNavigationBar(navController: NavHostController) {
                     )
                 },
                 onClick = {
-                    // TODO: add navigation
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
                 }
             )
         }
