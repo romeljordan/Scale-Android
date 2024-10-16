@@ -1,12 +1,25 @@
 package com.demo.app.data.core.dto
 
+import com.demo.app.domain.core.model.CurrentWeather
+
 data class CurrentWeatherDto(
     val coord: CoordinatedDto,
     val weather: List<WeatherDto>,
     val main: MainDto,
     val sys: SysDto,
     val name: String
-)
+) {
+    fun toDomainModel(): CurrentWeather = CurrentWeather(
+        city = name,
+        country = sys.country,
+        temperature = main.temp,
+        type = weather.firstOrNull()?.main ?: "",
+        typeDescription = weather.firstOrNull()?.description ?: "",
+        icon = weather.firstOrNull()?.icon ?: "",
+        sunset = sys.sunset,
+        sunrise = sys.sunrise
+    )
+}
 
 data class CoordinatedDto(
     val lon: Double,
