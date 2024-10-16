@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.demo.app.feature.home"
+    namespace = "com.demoapp.feature.records"
     compileSdk = 34
 
     defaultConfig {
@@ -60,6 +60,4 @@ dependencies {
 
     implementation(project(":core:design"))
     implementation(project(":feature:core"))
-    implementation(project(":feature:records"))
-    implementation(project(":feature:weather"))
 }
