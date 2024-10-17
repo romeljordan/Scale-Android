@@ -1,6 +1,8 @@
 package com.demo.app.feature.weather
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,18 +11,60 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.demo.app.core.design.theme.appTypography
 import com.demo.app.core.design.R
+import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
+import com.demo.app.domain.core.model.CurrentWeather
+import com.demo.app.feature.core.OnNavResult
+import com.demo.app.feature.core.state.FetchState
+import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.weather.composable.TimeInfoBoxUi
 import com.demo.app.feature.weather.composable.WeatherPreviewUi
+import com.demo.app.feature.weather.navigation.WeatherNavResult
+import com.demo.app.feature.weather.navigation.WeatherScreenAction
 
 @Composable
-internal fun WeatherScreen() {
+fun WeatherRoute(
+    viewModel: WeatherViewModel = hiltViewModel(),
+    onNavResult: OnNavResult<WeatherNavResult>
+) {
+    val currentWeather by viewModel.currentWeather.collectAsState()
+    val fetchState by viewModel.fetchState.collectAsState()
+    val requestState by viewModel.requestState.collectAsState()
+
+    currentWeather?.let {
+        WeatherScreen(
+            currentWeather = it,
+            fetchState = fetchState,
+            requestState = requestState,
+            onScreenAction = { action ->
+
+            }
+        )
+    } ?: Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColor.primaryBlue)
+    ) {
+        LoadingAnimUi()
+    }
+}
+
+@Composable
+private fun WeatherScreen(
+    currentWeather: CurrentWeather,
+    fetchState: FetchState,
+    requestState: RequestState,
+    onScreenAction: (action: WeatherScreenAction) -> Unit
+) {
     Scaffold(
         containerColor = AppColor.primaryBlue
     ) { innerPadding ->
@@ -38,7 +82,13 @@ internal fun WeatherScreen() {
                 )
             )
 
-            WeatherPreviewUi()
+            WeatherPreviewUi(
+                city = currentWeather.city,
+                country = currentWeather.country,
+                temperature = currentWeather.temperature,
+                description = currentWeather.type,
+                millisDate = 0L
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -59,11 +109,29 @@ internal fun WeatherScreen() {
                 )
             }
         }
+
+        if (requestState == RequestState.Loading || fetchState == FetchState.Loading) {
+            LoadingAnimUi()
+        }
     }
 }
 
 @Preview
 @Composable
 private fun PreviewWeatherScreen() {
-    WeatherScreen()
+    WeatherScreen(
+        requestState = RequestState.Idle,
+        fetchState = FetchState.Idle,
+        currentWeather = CurrentWeather(
+            city = "Antipolo City",
+            country = "Philippines",
+            temperature = 29.8,
+            type = "Sunny",
+            typeDescription = "Cloudy and sunny",
+            sunset = 0L,
+            sunrise = 0L,
+            icon = ""
+        ),
+        onScreenAction = { }
+    )
 }

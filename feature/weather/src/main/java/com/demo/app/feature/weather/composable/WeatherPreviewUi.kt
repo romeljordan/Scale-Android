@@ -29,7 +29,7 @@ import com.demo.app.core.design.theme.appTypography
 internal fun WeatherPreviewUi(
     city: String = "City",
     country: String = "Country",
-    temperature: Int = 30,
+    temperature: Double = 30.0,
     description: String = "Sunny",
     millisDate: Long = 0L
 ) {
