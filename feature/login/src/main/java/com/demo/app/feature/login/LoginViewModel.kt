@@ -10,15 +10,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    // private val useCase: OpenWeatherUseCase
+     private val useCase: OpenWeatherUseCase
 ): ViewModel() {
 
     init {
-        /*viewModelScope.launch {
+        viewModelScope.launch {
             val result = useCase.fetchOpenWeather(14.5995, 120.984222)
             Log.i("QWERTY", "fetch result: $result")
         }
-        TODO: here
-         */
     }
 }
