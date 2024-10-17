@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="open_weather_api_key" translatable="false">6bba981188a0d701b1cc7c3aef0ee611</string>
+    <string name="open_weather_api_key" translatable="false"></string>
 </resources>
