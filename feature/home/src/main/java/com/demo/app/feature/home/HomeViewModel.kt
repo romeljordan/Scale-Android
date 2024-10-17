@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.demo.app.data.core.Session
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
+import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.vm.BaseViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.gson.Gson
@@ -28,12 +29,17 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchAndLogWeather(latitude: Double, longitude: Double) = viewModelScope.launch {
         Session.current?.let { session ->
-
+            updateFetchState(FetchState.Loading)
             weatherUseCase.fetchOpenWeather(latitude, longitude).onSuccess { cWeather ->
                 val jsonString = Gson().toJson(cWeather.toWeatherLog())
-                authUseCase.log(session.userId, jsonString)
+                authUseCase.log(session.userId, jsonString).onSuccess {
+                    updateFetchState(FetchState.Idle)
+                }.onFailure {
+                    updateFetchState(FetchState.Error(it.message))
+                }
             }.onFailure {
                 Log.e("ScaleLog", "Fetch error: $it")
+                updateFetchState(FetchState.Error(it.message))
             }
         }
     }
