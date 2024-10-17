@@ -10,4 +10,13 @@ data class CurrentWeather(
     val sunrise: Long,
     val sunset: Long,
     val dateMillis: Long
-)
+) {
+    fun toWeatherLog(): WeatherLog = WeatherLog(
+        city = city,
+        country = country,
+        temp = temp,
+        type = type,
+        icon = icon,
+        dateMillis = dateMillis
+    )
+}

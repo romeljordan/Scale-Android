@@ -1,7 +1,7 @@
 package com.demo.app.feature.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.demo.app.data.core.Session
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.feature.core.state.RequestAction
 import com.demo.app.feature.core.state.RequestState
@@ -39,14 +39,6 @@ class LoginViewModel @Inject constructor(
         // TODO: check if has existing session key
         // if yes, call session api
         // if success go to home screen
-
-//        viewModelScope.launch {
-//            useCase.session(9).onSuccess {
-//                Log.i("checker", "logout success: $it")
-//            }.onFailure {
-//                Log.i("checker", "logout error ${it.message}")
-//            }
-//        }
     }
 
     fun signUp(
@@ -68,7 +60,7 @@ class LoginViewModel @Inject constructor(
     ) = viewModelScope.launch {
         updateRequestState(RequestState.Loading)
         useCase.login(username, password).onSuccess {
-            Log.i("checker", "user id: $it")
+            Session.current = it
             updateRequestState(RequestState.Done(LoginRequestAction.LoginRequest))
         }.onFailure {
             updateRequestState(RequestState.Error(it.message))
