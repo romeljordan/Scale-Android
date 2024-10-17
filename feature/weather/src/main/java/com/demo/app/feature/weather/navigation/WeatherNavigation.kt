@@ -13,7 +13,7 @@ sealed interface WeatherNavResult {
 }
 
 sealed interface WeatherScreenAction {
-
+    data object OnRefresh: WeatherScreenAction
 }
 
 fun NavController.navigateToWeather() {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,12 @@ internal fun TimeInfoBoxUi(
     tintColor: Color,
     modifier: Modifier = Modifier
 ) {
+
+    LaunchedEffect(true) {
+
+
+
+    }
     Column(
         modifier = modifier
             .border(
@@ -46,7 +53,7 @@ internal fun TimeInfoBoxUi(
         )
 
         Text(
-            text = dateMillis.formatDate(TIME_12HR_FORMAT),
+            text = (dateMillis * 1000).formatDate(TIME_12HR_FORMAT),
             style = appTypography.titleMedium.copy(
                 color = Color.White,
                 fontWeight = FontWeight.Medium

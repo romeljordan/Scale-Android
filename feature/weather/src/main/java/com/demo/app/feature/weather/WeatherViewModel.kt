@@ -1,5 +1,6 @@
 package com.demo.app.feature.weather
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.app.domain.core.model.CurrentWeather
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
@@ -46,6 +47,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun requestLocation() = viewModelScope.launch {
+        updateFetchState(FetchState.Loading)
         fusedLocationProviderClient.lastLocation
             .addOnSuccessListener {
                 fetchCurrentWeather(it.latitude, it.longitude)

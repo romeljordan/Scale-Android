@@ -47,7 +47,9 @@ fun WeatherRoute(
             fetchState = fetchState,
             requestState = requestState,
             onScreenAction = { action ->
-
+                when(action) {
+                    WeatherScreenAction.OnRefresh -> viewModel.requestLocation()
+                }
             }
         )
     } ?: Box(
@@ -90,7 +92,10 @@ private fun WeatherScreen(
                 temperature = currentWeather.temp,
                 description = currentWeather.type,
                 dateMillis = currentWeather.dateMillis,
-                icon = currentWeather.icon
+                icon = currentWeather.icon,
+                onRefresh = {
+                    onScreenAction.invoke(WeatherScreenAction.OnRefresh)
+                }
             )
 
             Row(
