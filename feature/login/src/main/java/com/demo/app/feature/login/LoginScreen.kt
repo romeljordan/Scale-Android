@@ -14,10 +14,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,16 +28,60 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.demo.app.core.design.R
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
+import com.demo.app.feature.core.OnNavResult
+import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.login.composable.LoginCredentialsInputUi
 import com.demo.app.feature.login.composable.SignUpCredentialsInputUi
+import com.demo.app.feature.login.navigation.LoginNavResult
+import com.demo.app.feature.login.navigation.LoginScreenAction
 
 @Composable
-fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel()
+internal fun LoginRoute(
+    viewModel: LoginViewModel = hiltViewModel(),
+    onNavResult: OnNavResult<LoginNavResult>
 ) {
-    // TODO: update data
-    var hasAnAccount by remember { mutableStateOf(true) }
+    val screenType by viewModel.screenType.collectAsState()
+    val requestState by viewModel.requestState.collectAsState()
 
+    LaunchedEffect(requestState) {
+        when (val state = requestState) {
+            is RequestState.Done -> {
+                if (state.action is LoginRequestAction.LoginRequest) {
+                    onNavResult.invoke(LoginNavResult.MoveToHomeScreen)
+                }
+            }
+            else -> { /* no-op*/ }
+        }
+
+        onNavResult.invoke(LoginNavResult.MoveToHomeScreen)
+    }
+
+    LoginScreen(
+        screenType = screenType,
+        requestState = requestState
+    ) { action ->
+        when (action) {
+            LoginScreenAction.OnSwitchScreen -> {
+                viewModel.switchScreenType()
+            }
+
+            is LoginScreenAction.OnLoginRequest -> {
+                viewModel.login(action.username, action.password)
+            }
+
+            is LoginScreenAction.OnSignUpRequest -> {
+                viewModel.signUp(action.username, action.password)
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoginScreen(
+    screenType: ScreenType,
+    requestState: RequestState,
+    onScreenAction: (action: LoginScreenAction) -> Unit
+) {
     Scaffold(
         containerColor = AppColor.primaryBlue
     ) { innerPadding ->
@@ -85,23 +128,27 @@ fun LoginScreen(
 
             // TODO: fix start and exit animation (slide in and out)
             AnimatedVisibility(
-                visible = hasAnAccount,
+                visible = screenType == ScreenType.Login,
             ) {
                 LoginCredentialsInputUi(
-                    onShowSignUpInput = { hasAnAccount = false },
-                    onLogin = { _, _ ->
-                        // TODO: add viewmodel
+                    onShowSignUpInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
+                    onLogin = { username, pw ->
+                        onScreenAction.invoke(
+                            LoginScreenAction.OnLoginRequest(username, pw)
+                        )
                     }
                 )
             }
 
             AnimatedVisibility(
-                visible = !hasAnAccount
+                visible = screenType == ScreenType.SignUp
             ) {
                 SignUpCredentialsInputUi(
-                    onShowLoginInput = { hasAnAccount = true },
-                    onSignUp = { _, _ ->
-                        // TODO: add viewmodel
+                    onShowLoginInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
+                    onSignUp = { username, pw ->
+                        onScreenAction.invoke(
+                            LoginScreenAction.OnSignUpRequest(username, pw)
+                        )
                     }
                 )
             }
@@ -112,5 +159,9 @@ fun LoginScreen(
 @Preview
 @Composable
 private fun PreviewHomeScreen() {
-    LoginScreen()
+    LoginScreen(
+        screenType = ScreenType.Login,
+        onScreenAction = { },
+        requestState = RequestState.Idle
+    )
 }

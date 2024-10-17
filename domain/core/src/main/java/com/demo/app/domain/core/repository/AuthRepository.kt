@@ -4,7 +4,7 @@ interface AuthRepository {
     suspend fun login(
         username: String,
         password: String
-    ): Boolean
+    ): Int
 
     suspend fun signUp(
         username: String,
@@ -21,7 +21,7 @@ interface AuthRepository {
 
     suspend fun logs(
         userId: Int
-    ): Boolean
+    ): List<String>
 
     suspend fun log(
         userId: Int,

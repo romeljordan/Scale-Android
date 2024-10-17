@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.demo.app.feature.home.navigation.HomeNavResult
 import com.demo.app.feature.home.navigation.homeScreen
+import com.demo.app.feature.home.navigation.navigateToHome
 import com.demo.app.feature.login.navigation.LoginNavResult
 import com.demo.app.feature.login.navigation.loginScreen
 
@@ -23,6 +24,10 @@ fun ScaleNavGraph(
                 when (res) {
                     LoginNavResult.Close -> {
                         // TODO: close app
+                    }
+
+                    LoginNavResult.MoveToHomeScreen -> {
+                        navController.navigateToHome()
                     }
                 }
             }

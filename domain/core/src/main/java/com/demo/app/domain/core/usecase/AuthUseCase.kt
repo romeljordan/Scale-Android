@@ -4,7 +4,7 @@ interface AuthUseCase {
     suspend fun login(
         username: String,
         password: String
-    ): Result<Boolean>
+    ): Result<Int>
 
     suspend fun signUp(
         username: String,
@@ -21,7 +21,7 @@ interface AuthUseCase {
 
     suspend fun logs(
         userId: Int
-    ): Result<Boolean>
+    ): Result<List<String>>
 
     suspend fun log(
         userId: Int,

@@ -2,6 +2,11 @@ package com.demo.app.data.core.datasource
 
 
 import com.demo.app.data.core.api.AuthApi
+import com.demo.app.data.core.dto.LogResultDto
+import com.demo.app.data.core.dto.LogsResultDto
+import com.demo.app.data.core.dto.RequestResultDto
+import com.demo.app.data.core.dto.SessionResultDto
+import com.demo.app.data.core.dto.UserResultDto
 import com.google.gson.Gson
 import retrofit2.Response
 import javax.inject.Inject
@@ -14,7 +19,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     suspend fun login(
         username: String,
         password: String
-    ): Response<Boolean> {
+    ): Response<SessionResultDto> {
         return api.login(
             gson.toJsonTree(
                 linkedMapOf<String, Any?>().apply {
@@ -28,8 +33,8 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     suspend fun signup(
         username: String,
         password: String
-    ): Response<Boolean> {
-        return api.login(
+    ): Response<UserResultDto> {
+        return api.signup(
             gson.toJsonTree(
                 linkedMapOf<String, Any?>().apply {
                     put("username", username)
@@ -41,7 +46,7 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 
     suspend fun logout(
         userId: Int
-    ): Response<Boolean> {
+    ): Response<RequestResultDto> {
         return api.logout(
             gson.toJsonTree(
                 linkedMapOf<String, Any?>().apply {
@@ -53,20 +58,20 @@ class AuthRemoteDataSourceImpl @Inject constructor(
 
     suspend fun session(
         sessionId: Int
-    ): Response<Boolean> {
+    ): Response<SessionResultDto> {
         return api.session(sessionId = sessionId)
     }
 
     suspend fun logs(
         userId: Int
-    ): Response<Boolean> {
+    ): Response<LogsResultDto> {
         return api.logs(userId = userId)
     }
 
     suspend fun log(
         userId: Int,
         jsonLog: String
-    ): Response<Boolean> {
+    ): Response<LogResultDto> {
         return api.log(
             gson.toJsonTree(
                 linkedMapOf<String, Any?>().apply {
