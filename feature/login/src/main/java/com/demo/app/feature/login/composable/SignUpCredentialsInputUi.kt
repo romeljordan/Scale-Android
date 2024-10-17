@@ -31,7 +31,7 @@ internal fun SignUpCredentialsInputUi(
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var retypePassword by remember { mutableStateOf("") }
+    /*var retypePassword by remember { mutableStateOf("") }*/
 
     Column(
         modifier = Modifier.fillMaxWidth(0.85f),
@@ -39,7 +39,7 @@ internal fun SignUpCredentialsInputUi(
     ) {
         InputTextField(
             currentValue = username,
-            placeholderText = "Username",
+            placeholderText = "Create Username",
             leadingIcon = R.drawable.ic_person_24,
             onValueChange = { username = it }
         )
@@ -48,7 +48,7 @@ internal fun SignUpCredentialsInputUi(
 
         InputTextField(
             currentValue = password,
-            placeholderText = "Password",
+            placeholderText = "Create Password",
             isPassword = true,
             leadingIcon = R.drawable.ic_lock_24,
             onValueChange = { password = it }
@@ -56,7 +56,7 @@ internal fun SignUpCredentialsInputUi(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        InputTextField(
+        /*InputTextField(
             currentValue = retypePassword,
             placeholderText = "Re-type Password",
             isPassword = true,
@@ -64,7 +64,7 @@ internal fun SignUpCredentialsInputUi(
             onValueChange = { retypePassword = it }
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))*/
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -98,9 +98,10 @@ internal fun SignUpCredentialsInputUi(
                 .fillMaxWidth()
                 .background(AppColor.blue),
             onClick = {
-                if (password == retypePassword) {
+                /*if (password == retypePassword) {
                     onSignUp.invoke(username, password)
-                }
+                }*/
+                onSignUp.invoke(username, password)
             }
         ) {
             Text(

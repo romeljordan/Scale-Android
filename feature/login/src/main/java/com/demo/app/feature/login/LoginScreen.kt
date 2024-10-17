@@ -1,10 +1,8 @@
 package com.demo.app.feature.login
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -133,14 +131,13 @@ private fun LoginScreen(
                 )
             }
 
-            Column(
+            Box(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                contentAlignment = Alignment.Center
             ) {
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility (
                     visible = screenType == ScreenType.Login,
                     enter = fadeIn(),
                     exit = fadeOut()
@@ -160,7 +157,7 @@ private fun LoginScreen(
                     )
                 }
 
-                AnimatedVisibility(
+                androidx.compose.animation.AnimatedVisibility(
                     visible = screenType == ScreenType.SignUp,
                     enter = fadeIn(),
                     exit = fadeOut()
