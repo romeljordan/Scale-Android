@@ -6,6 +6,7 @@ import com.demo.app.domain.core.usecase.OpenWeatherUseCase
 import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestAction
 import com.demo.app.feature.core.vm.BaseViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +20,8 @@ sealed interface WeatherRequestAction: RequestAction {
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val useCase: OpenWeatherUseCase
+    private val useCase: OpenWeatherUseCase,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ): BaseViewModel() {
 
     private val _currentWeather = MutableStateFlow<CurrentWeather?>(null)
@@ -30,16 +32,23 @@ class WeatherViewModel @Inject constructor(
     )
 
     init {
-        fetchCurrentWeather()
+        requestLocation()
     }
 
-    fun fetchCurrentWeather() = viewModelScope.launch {
+    private fun fetchCurrentWeather(latitude: Double, longitude: Double) = viewModelScope.launch {
         updateFetchState(FetchState.Loading)
-        useCase.fetchOpenWeather(14.5995, 120.9842).onSuccess {
+        useCase.fetchOpenWeather(latitude, longitude).onSuccess {
             _currentWeather.emit(it)
             updateFetchState(FetchState.Idle)
         }.onFailure {
             updateFetchState(FetchState.Error(it.message))
         }
+    }
+
+    fun requestLocation() = viewModelScope.launch {
+        fusedLocationProviderClient.lastLocation
+            .addOnSuccessListener {
+                fetchCurrentWeather(it.latitude, it.longitude)
+            }
     }
 }

@@ -6,6 +6,7 @@ import com.demo.app.data.core.Session
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
 import com.demo.app.feature.core.vm.BaseViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,12 +15,21 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val weatherUseCase: OpenWeatherUseCase,
-    private val authUseCase: AuthUseCase
+    private val authUseCase: AuthUseCase,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
 ): BaseViewModel() {
 
-    fun fetchAndLogWeather() = viewModelScope.launch {
+    fun fetchLocationAndLogWeather() {
+        fusedLocationProviderClient.lastLocation // don't need to check permission -> already sure that has permission from this point
+            .addOnSuccessListener { location ->
+                // TODO: add back fetchAndLogWeather(location.latitude, location.longitude)
+            }
+    }
+
+    private fun fetchAndLogWeather(latitude: Double, longitude: Double) = viewModelScope.launch {
         Session.current?.let { session ->
-            weatherUseCase.fetchOpenWeather(14.5995, 120.9842).onSuccess { cWeather ->
+
+            weatherUseCase.fetchOpenWeather(latitude, longitude).onSuccess { cWeather ->
                 val jsonString = Gson().toJson(cWeather.toWeatherLog())
                 authUseCase.log(session.userId, jsonString)
             }.onFailure {

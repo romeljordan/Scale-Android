@@ -23,7 +23,7 @@ internal fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-    val permissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val permissionState = rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     if (permissionState.status.isGranted) {
         Scaffold(
@@ -41,13 +41,13 @@ internal fun HomeScreen(
         GrantLocationPermission()
     }
 
-    PermissionUi(Manifest.permission.ACCESS_FINE_LOCATION) {
+    PermissionUi(Manifest.permission.ACCESS_COARSE_LOCATION) {
         /* no-op */
     }
 
     LaunchedEffect(permissionState.status.isGranted) {
         if (permissionState.status.isGranted) {
-           // TODO: add back viewModel.fetchAndLogWeather()
+           viewModel.fetchLocationAndLogWeather()
         }
     }
 }

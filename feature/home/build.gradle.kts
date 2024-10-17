@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.gson)
     implementation(libs.accompanist.permissions)
+    implementation(libs.play.services.location)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)

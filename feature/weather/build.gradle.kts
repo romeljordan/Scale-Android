@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.coil.compose)
+    implementation(libs.play.services.location)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
