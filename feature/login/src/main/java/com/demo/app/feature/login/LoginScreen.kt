@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.demo.app.core.design.R
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
@@ -32,7 +33,9 @@ import com.demo.app.feature.login.composable.LoginCredentialsInputUi
 import com.demo.app.feature.login.composable.SignUpCredentialsInputUi
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    viewModel: LoginViewModel = hiltViewModel()
+) {
     // TODO: update data
     var hasAnAccount by remember { mutableStateOf(true) }
 

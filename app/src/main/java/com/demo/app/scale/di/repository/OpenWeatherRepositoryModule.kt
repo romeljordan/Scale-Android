@@ -1,4 +1,4 @@
-package com.demo.app.di.repository
+package com.demo.app.scale.di.repository
 
 import com.demo.app.data.core.repository.OpenWeatherRepositoryImpl
 import com.demo.app.domain.core.repository.OpenWeatherRepository
