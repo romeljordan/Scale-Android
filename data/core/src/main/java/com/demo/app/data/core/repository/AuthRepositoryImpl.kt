@@ -1,11 +1,13 @@
 package com.demo.app.data.core.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.demo.app.data.core.PreferencesKey
 import com.demo.app.data.core.datasource.AuthRemoteDataSourceImpl
+import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.repository.AuthRepository
 import javax.inject.Inject
 
@@ -13,14 +15,15 @@ class AuthRepositoryImpl @Inject constructor(
     private val dataSource: AuthRemoteDataSourceImpl,
     private val dataStore: DataStore<Preferences>
 ): AuthRepository {
-    override suspend fun login(username: String, password: String): Int {
+    override suspend fun login(username: String, password: String): Session {
         val response = dataSource.login(username, password)
         return if (response.isSuccessful) {
             response.body()?.let {
                 dataStore.edit { preference ->
                     preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] = it.sessionId.toString()
                 }
-                it.userId
+                Log.i("checker", "login: ${it.userId}, ${it.sessionId} | ${it.success}")
+                it.toDomainModel()
             } ?: throw Throwable("Missing body")
         } else {
             throw Throwable(response.errorBody()?.string())
@@ -48,10 +51,10 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun session(sessionId: Int): Boolean {
+    override suspend fun session(sessionId: Int): Session {
         val response = dataSource.session(sessionId)
         return if (response.isSuccessful) {
-            response.body()?.success ?: throw Throwable("Missing body")
+            response.body()?.toDomainModel() ?: throw Throwable("Missing body")
         } else {
             throw Throwable(response.errorBody()?.string())
         }

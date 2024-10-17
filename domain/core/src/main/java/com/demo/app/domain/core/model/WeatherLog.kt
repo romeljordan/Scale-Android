@@ -1,13 +1,10 @@
 package com.demo.app.domain.core.model
 
-data class CurrentWeather(
+data class WeatherLog(
     val city: String,
     val country: String,
     val temp: Double,
     val type: String,
-    val typeDescription: String,
     val icon: String,
-    val sunrise: Long,
-    val sunset: Long,
     val dateMillis: Long
 )

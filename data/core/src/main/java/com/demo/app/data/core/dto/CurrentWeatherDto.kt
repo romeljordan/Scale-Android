@@ -1,7 +1,6 @@
 package com.demo.app.data.core.dto
 
 import com.demo.app.domain.core.model.CurrentWeather
-import java.time.LocalDate
 
 data class CurrentWeatherDto(
     val coord: CoordinatedDto,
@@ -13,7 +12,7 @@ data class CurrentWeatherDto(
     fun toDomainModel(): CurrentWeather = CurrentWeather(
         city = name,
         country = sys.country,
-        temperature = main.temp,
+        temp = main.temp,
         type = weather.firstOrNull()?.main ?: "",
         typeDescription = weather.firstOrNull()?.description ?: "",
         icon = weather.firstOrNull()?.icon ?: "",

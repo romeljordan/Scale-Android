@@ -85,7 +85,7 @@ private fun WeatherScreen(
             WeatherPreviewUi(
                 city = currentWeather.city,
                 country = currentWeather.country,
-                temperature = currentWeather.temperature,
+                temperature = currentWeather.temp,
                 description = currentWeather.type,
                 dateMillis = currentWeather.dateMillis,
                 icon = currentWeather.icon
@@ -126,7 +126,7 @@ private fun PreviewWeatherScreen() {
         currentWeather = CurrentWeather(
             city = "Antipolo City",
             country = "Philippines",
-            temperature = 29.8,
+            temp = 29.8,
             type = "Sunny",
             typeDescription = "Cloudy and sunny",
             sunset = 0L,
