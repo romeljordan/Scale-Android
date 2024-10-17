@@ -25,6 +25,7 @@ internal fun TimeInfoBoxUi(
     @DrawableRes icon: Int,
     title: String,
     dateMillis: Long,
+    tintColor: Color,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -40,7 +41,8 @@ internal fun TimeInfoBoxUi(
         Icon(
             modifier = Modifier.size(40.dp),
             painter = painterResource(icon),
-            contentDescription = null
+            contentDescription = null,
+            tint = tintColor
         )
 
         Text(

@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,10 +74,11 @@ private fun WeatherScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Hello, username!",
+                text = "Today's Weather",
                 style = appTypography.titleLarge.copy(
                     color = Color.White
                 )
@@ -98,15 +100,17 @@ private fun WeatherScreen(
                 TimeInfoBoxUi(
                     modifier = Modifier.weight(1f),
                     icon = R.drawable.ic_sunny_filled_24,
+                    tintColor = AppColor.yellow,
                     title = "Sunrise",
                     dateMillis = currentWeather.sunrise
                 )
 
                 TimeInfoBoxUi(
                     modifier = Modifier.weight(1f),
-                    icon = R.drawable.ic_sunny_outline_24,
+                    icon = R.drawable.ic_sunny_filled_24,
                     title = "Sunset",
-                    dateMillis = currentWeather.sunset
+                    dateMillis = currentWeather.sunset,
+                    tintColor = AppColor.orange
                 )
             }
         }
