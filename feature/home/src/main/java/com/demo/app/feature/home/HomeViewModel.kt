@@ -17,11 +17,7 @@ class HomeViewModel @Inject constructor(
     private val authUseCase: AuthUseCase
 ): BaseViewModel() {
 
-    init {
-//        fetchAndLogWeather() TODO: add this back
-    }
-
-    private fun fetchAndLogWeather() = viewModelScope.launch {
+    fun fetchAndLogWeather() = viewModelScope.launch {
         Session.current?.let { session ->
             weatherUseCase.fetchOpenWeather(14.5995, 120.9842).onSuccess { cWeather ->
                 val jsonString = Gson().toJson(cWeather.toWeatherLog())

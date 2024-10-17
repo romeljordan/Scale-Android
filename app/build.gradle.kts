@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
     implementation(libs.androidx.datastore)
+    implementation(libs.play.services.location)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
