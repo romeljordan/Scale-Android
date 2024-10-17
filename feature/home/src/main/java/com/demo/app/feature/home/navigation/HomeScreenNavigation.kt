@@ -9,7 +9,7 @@ import com.demo.app.feature.home.HomeScreen
 const val HOME_NAV_ROUTE = "home_nav_route"
 
 sealed class HomeNavResult {
-    data object MoveBack: HomeNavResult()
+    data object MoveToLogin: HomeNavResult()
 }
 
 fun NavController.navigateToHome() {
@@ -20,6 +20,6 @@ fun NavGraphBuilder.homeScreen(onNavResult: OnNavResult<HomeNavResult>) {
     composable(
         route = HOME_NAV_ROUTE
     ) {
-        HomeScreen()
+        HomeScreen(onNavResult = onNavResult)
     }
 }

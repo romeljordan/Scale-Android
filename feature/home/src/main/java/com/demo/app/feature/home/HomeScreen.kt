@@ -10,6 +10,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.demo.app.core.design.composable.PermissionUi
+import com.demo.app.feature.core.util.OnNavResult
+import com.demo.app.feature.home.navigation.HomeNavResult
 import com.demo.app.feature.home.navigation.HomeScreenNavGraph
 import com.demo.app.feature.home.ui.BottomNavigationBar
 import com.demo.app.feature.weather.navigation.WEATHER_NAV_ROUTE
@@ -20,7 +22,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 internal fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavResult: OnNavResult<HomeNavResult>
 ) {
     val navController = rememberNavController()
     val permissionState = rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -34,7 +37,8 @@ internal fun HomeScreen(
             HomeScreenNavGraph(
                 navController = navController,
                 startDestination = WEATHER_NAV_ROUTE,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
+                onNavResult = onNavResult
             )
         }
     } else {
@@ -55,5 +59,7 @@ internal fun HomeScreen(
 @Preview
 @Composable
 private fun PreviewHomeScreen() {
-    HomeScreen()
+    HomeScreen(
+        onNavResult = { }
+    )
 }

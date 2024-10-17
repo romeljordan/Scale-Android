@@ -10,10 +10,12 @@ const val WEATHER_NAV_ROUTE = "weather_nav_route"
 
 sealed interface WeatherNavResult {
     data object MoveBack: WeatherNavResult
+    data object OnLogOut: WeatherNavResult
 }
 
 sealed interface WeatherScreenAction {
     data object OnRefresh: WeatherScreenAction
+    data object OnLogOut: WeatherScreenAction
 }
 
 fun NavController.navigateToWeather() {

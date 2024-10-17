@@ -36,7 +36,7 @@ fun ScaleNavGraph(
         homeScreen(
             onNavResult = { res ->
                 when (res) {
-                    HomeNavResult.MoveBack -> {
+                    HomeNavResult.MoveToLogin -> {
                         navController.popBackStack()
                     }
                 }

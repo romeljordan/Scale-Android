@@ -53,6 +53,7 @@ internal fun LoginRoute(
             is RequestState.Done -> {
                 if (state.action is LoginRequestAction.LoginRequest) {
                     onNavResult.invoke(LoginNavResult.MoveToHomeScreen)
+                    viewModel.updateRequestState(RequestState.Idle)
                 }
             }
             else -> { /* no-op*/ }

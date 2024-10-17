@@ -1,11 +1,13 @@
 package com.demo.app.feature.weather
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.demo.app.data.core.Session
 import com.demo.app.domain.core.model.CurrentWeather
+import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
 import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestAction
+import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.core.vm.BaseViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,12 +18,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface WeatherRequestAction: RequestAction {
-    data object LogCurrentWeather: WeatherRequestAction
+    data object LogOut: WeatherRequestAction
 }
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val useCase: OpenWeatherUseCase,
+    private val authUseCase: AuthUseCase,
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ): BaseViewModel() {
 
@@ -52,5 +55,16 @@ class WeatherViewModel @Inject constructor(
             .addOnSuccessListener {
                 fetchCurrentWeather(it.latitude, it.longitude)
             }
+    }
+
+    fun logOut()= viewModelScope.launch {
+        Session.current?.let { session ->
+            updateRequestState(RequestState.Loading)
+            authUseCase.logout(session.userId).onSuccess {
+                updateRequestState(RequestState.Done(WeatherRequestAction.LogOut))
+            }.onFailure {
+                updateRequestState(RequestState.Error(it.message))
+            }
+        }
     }
 }
