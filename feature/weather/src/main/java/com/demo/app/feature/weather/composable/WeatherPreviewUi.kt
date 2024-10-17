@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -17,21 +18,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.demo.app.core.design.R
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
+import com.demo.app.feature.core.util.FULL_DATE_TIME_12HR_FORMAT
+import com.demo.app.feature.core.util.formatDate
 
-// TODO: update parameter default values
 @Composable
 internal fun WeatherPreviewUi(
-    city: String = "City",
-    country: String = "Country",
-    temperature: Double = 30.0,
-    description: String = "Sunny",
-    millisDate: Long = 0L
+    city: String,
+    country: String,
+    temperature: Double,
+    description: String,
+    dateMillis: Long,
+    icon: String
 ) {
     Column(
         modifier = Modifier
@@ -96,11 +104,17 @@ internal fun WeatherPreviewUi(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
+                SubcomposeAsyncImage(
                     modifier = Modifier.size(50.dp),
-                    painter = painterResource(R.drawable.ic_sunny_filled_24), // TODO: update icon
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data("https://openweathermap.org/img/wn/$icon@4x.png")
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
-                    tint = AppColor.orange
+                    contentScale = ContentScale.Crop,
+                    loading = {
+                        CircularProgressIndicator()
+                    }
                 )
 
                 Text(
@@ -113,7 +127,7 @@ internal fun WeatherPreviewUi(
         }
 
         Text(
-            text = "Thu, Oct 17",
+            text = dateMillis.formatDate(FULL_DATE_TIME_12HR_FORMAT),
             style = appTypography.labelSmall.copy(
                 color = Color.White
             ),

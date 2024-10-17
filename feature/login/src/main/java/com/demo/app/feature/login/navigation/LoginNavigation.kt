@@ -3,7 +3,7 @@ package com.demo.app.feature.login.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.demo.app.feature.core.OnNavResult
+import com.demo.app.feature.core.util.OnNavResult
 import com.demo.app.feature.login.LoginRoute
 
 const val LOGIN_NAV_ROUTE = "login_nav_route"

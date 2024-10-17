@@ -17,6 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.demo.app.core.design.theme.appTypography
+import com.demo.app.feature.core.util.TIME_12HR_FORMAT
+import com.demo.app.feature.core.util.formatDate
 
 @Composable
 internal fun TimeInfoBoxUi(
@@ -42,7 +44,7 @@ internal fun TimeInfoBoxUi(
         )
 
         Text(
-            text = "5:00 AM", // TODO: add converter
+            text = dateMillis.formatDate(TIME_12HR_FORMAT),
             style = appTypography.titleMedium.copy(
                 color = Color.White,
                 fontWeight = FontWeight.Medium

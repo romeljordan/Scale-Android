@@ -23,7 +23,7 @@ import com.demo.app.core.design.R
 import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.domain.core.model.CurrentWeather
-import com.demo.app.feature.core.OnNavResult
+import com.demo.app.feature.core.util.OnNavResult
 import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.weather.composable.TimeInfoBoxUi
@@ -87,7 +87,8 @@ private fun WeatherScreen(
                 country = currentWeather.country,
                 temperature = currentWeather.temperature,
                 description = currentWeather.type,
-                millisDate = 0L
+                dateMillis = currentWeather.dateMillis,
+                icon = currentWeather.icon
             )
 
             Row(
@@ -98,14 +99,14 @@ private fun WeatherScreen(
                     modifier = Modifier.weight(1f),
                     icon = R.drawable.ic_sunny_filled_24,
                     title = "Sunrise",
-                    dateMillis = 0L
+                    dateMillis = currentWeather.sunrise
                 )
 
                 TimeInfoBoxUi(
                     modifier = Modifier.weight(1f),
                     icon = R.drawable.ic_sunny_outline_24,
                     title = "Sunset",
-                    dateMillis = 0L
+                    dateMillis = currentWeather.sunset
                 )
             }
         }
@@ -130,7 +131,8 @@ private fun PreviewWeatherScreen() {
             typeDescription = "Cloudy and sunny",
             sunset = 0L,
             sunrise = 0L,
-            icon = ""
+            icon = "",
+            dateMillis = System.currentTimeMillis()
         ),
         onScreenAction = { }
     )

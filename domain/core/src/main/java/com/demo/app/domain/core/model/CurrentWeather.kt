@@ -8,5 +8,6 @@ data class CurrentWeather(
     val typeDescription: String,
     val icon: String,
     val sunrise: Long,
-    val sunset: Long
+    val sunset: Long,
+    val dateMillis: Long
 )

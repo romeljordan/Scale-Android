@@ -10,6 +10,7 @@ interface OpenWeatherApi {
     suspend fun currentWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
-        @Query("appid") apiKey: String
+        @Query("appid") apiKey: String,
+        @Query("units") unit: String
     ): Response<CurrentWeatherDto>
 }
