@@ -1,6 +1,5 @@
 package com.demo.app.feature.login
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.feature.core.state.RequestAction
@@ -51,6 +50,7 @@ class LoginViewModel @Inject constructor(
     ) = viewModelScope.launch {
         updateRequestState(RequestState.Loading)
         useCase.signUp(username, password).onSuccess {
+            switchScreenType()
             updateRequestState(RequestState.Done(LoginRequestAction.SignUp(username)))
         }.onFailure {
             updateRequestState(RequestState.Error(it.message))

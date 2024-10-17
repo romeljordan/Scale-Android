@@ -129,7 +129,11 @@ private fun LoginScreen(
             AnimatedVisibility(
                 visible = screenType == ScreenType.Login,
             ) {
+                val initialUserName = if (requestState is RequestState.Done && requestState.action is LoginRequestAction.SignUp) {
+                    (requestState.action as LoginRequestAction.SignUp).username
+                } else ""
                 LoginCredentialsInputUi(
+                    initialUserName = initialUserName,
                     onShowSignUpInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
                     onLogin = { username, pw ->
                         onScreenAction.invoke(
