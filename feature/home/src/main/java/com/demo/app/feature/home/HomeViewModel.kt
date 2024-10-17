@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
     fun fetchLocationAndLogWeather() {
         fusedLocationProviderClient.lastLocation // don't need to check permission -> already sure that has permission from this point
             .addOnSuccessListener { location ->
-                // TODO: add back fetchAndLogWeather(location.latitude, location.longitude)
+                fetchAndLogWeather(location.latitude, location.longitude)
             }
     }
 

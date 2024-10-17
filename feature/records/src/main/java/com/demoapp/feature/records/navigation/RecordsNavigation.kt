@@ -13,7 +13,6 @@ fun NavController.navigateToRecords() {
     )
 }
 
-// TODO: add nav result
 fun NavGraphBuilder.recordsScreen() {
     composable(
         route = RECORDS_NAV_ROUTE
