@@ -54,4 +54,12 @@ class AuthUseCaseImpl @Inject constructor(
             Result.failure(error)
         }
     }
+
+    override suspend fun fetchCurrentSessionKey(): Result<String> {
+        return try {
+            Result.success(repository.fetchCurrentSessionKey())
+        } catch (e: Throwable) {
+            Result.failure(e)
+        }
+    }
 }

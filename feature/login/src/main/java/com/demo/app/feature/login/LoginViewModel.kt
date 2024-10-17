@@ -3,6 +3,7 @@ package com.demo.app.feature.login
 import androidx.lifecycle.viewModelScope
 import com.demo.app.data.core.Session
 import com.demo.app.domain.core.usecase.AuthUseCase
+import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestAction
 import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.core.vm.BaseViewModel
@@ -36,9 +37,27 @@ class LoginViewModel @Inject constructor(
     )
 
     init {
-        // TODO: check if has existing session key
-        // if yes, call session api
-        // if success go to home screen
+        fetchCurrentSession()
+    }
+
+    private fun fetchCurrentSession() = viewModelScope.launch {
+        updateFetchState(FetchState.Loading)
+        useCase.fetchCurrentSessionKey().onSuccess {
+            updateFetchState(FetchState.Idle)
+            if (it.isBlank()) {
+                updateFetchState(FetchState.Idle)
+            } else {
+                updateRequestState(RequestState.Loading)
+                useCase.session(it.toInt()).onSuccess { session ->
+                    Session.current = session
+                    updateRequestState(RequestState.Done(LoginRequestAction.LoginRequest))
+                }.onFailure {
+                    updateRequestState(RequestState.Idle)
+                }
+            }
+        }.onFailure {
+            updateFetchState(FetchState.Error(it.message))
+        }
     }
 
     fun signUp(

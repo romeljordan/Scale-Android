@@ -29,6 +29,7 @@ import com.demo.app.core.design.R
 import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
+import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.core.util.OnNavResult
 import com.demo.app.feature.login.composable.LoginCredentialsInputUi
@@ -43,6 +44,7 @@ internal fun LoginRoute(
 ) {
     val screenType by viewModel.screenType.collectAsState()
     val requestState by viewModel.requestState.collectAsState()
+    val fetchState by viewModel.fetchState.collectAsState()
 
     LaunchedEffect(requestState) {
         when (val state = requestState) {
@@ -57,7 +59,8 @@ internal fun LoginRoute(
 
     LoginScreen(
         screenType = screenType,
-        requestState = requestState
+        requestState = requestState,
+        fetchState = fetchState
     ) { action ->
         when (action) {
             LoginScreenAction.OnSwitchScreen -> {
@@ -79,6 +82,7 @@ internal fun LoginRoute(
 private fun LoginScreen(
     screenType: ScreenType,
     requestState: RequestState,
+    fetchState: FetchState,
     onScreenAction: (action: LoginScreenAction) -> Unit
 ) {
     Scaffold(
@@ -157,7 +161,7 @@ private fun LoginScreen(
             }
         }
 
-        if (requestState == RequestState.Loading) {
+        if (requestState == RequestState.Loading || fetchState == FetchState.Loading) {
             LoadingAnimUi()
         }
     }
@@ -169,6 +173,7 @@ private fun PreviewHomeScreen() {
     LoginScreen(
         screenType = ScreenType.Login,
         onScreenAction = { },
-        requestState = RequestState.Idle
+        requestState = RequestState.Idle,
+        fetchState = FetchState.Idle
     )
 }

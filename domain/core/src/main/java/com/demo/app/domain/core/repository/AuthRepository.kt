@@ -29,4 +29,6 @@ interface AuthRepository {
         userId: Int,
         jsonLog: String
     ): Boolean
+
+    suspend fun fetchCurrentSessionKey(): String
 }

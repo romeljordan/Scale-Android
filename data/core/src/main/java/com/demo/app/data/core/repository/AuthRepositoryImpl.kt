@@ -9,6 +9,9 @@ import com.demo.app.data.core.PreferencesKey
 import com.demo.app.data.core.datasource.AuthRemoteDataSourceImpl
 import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.repository.AuthRepository
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -76,5 +79,11 @@ class AuthRepositoryImpl @Inject constructor(
         } else {
             throw Throwable(response.errorBody()?.string())
         }
+    }
+
+    override suspend fun fetchCurrentSessionKey(): String {
+        return dataStore.data.map { preference ->
+            preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] ?: ""
+        }.firstOrNull() ?: ""
     }
 }

@@ -29,4 +29,6 @@ interface AuthUseCase {
         userId: Int,
         jsonLog: String
     ): Result<Boolean>
+
+    suspend fun fetchCurrentSessionKey(): Result<String>
 }
