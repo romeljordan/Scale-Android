@@ -1,6 +1,7 @@
 package com.demo.app.domain.core.usecase
 
 import com.demo.app.domain.core.model.Session
+import com.demo.app.domain.core.model.WeatherLog
 
 interface AuthUseCase {
     suspend fun login(
@@ -23,7 +24,7 @@ interface AuthUseCase {
 
     suspend fun logs(
         userId: Int
-    ): Result<List<String>>
+    ): Result<List<WeatherLog>>
 
     suspend fun log(
         userId: Int,

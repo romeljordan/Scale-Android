@@ -1,8 +1,12 @@
 package com.demo.app.feature.login
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -92,9 +96,9 @@ private fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(modifier = Modifier.fillMaxHeight(0.1f))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,35 +133,47 @@ private fun LoginScreen(
                 )
             }
 
-            // TODO: fix start and exit animation (slide in and out)
-            AnimatedVisibility(
-                visible = screenType == ScreenType.Login,
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val initialUserName = if (requestState is RequestState.Done && requestState.action is LoginRequestAction.SignUp) {
-                    (requestState.action as LoginRequestAction.SignUp).username
-                } else ""
-                LoginCredentialsInputUi(
-                    initialUserName = initialUserName,
-                    onShowSignUpInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
-                    onLogin = { username, pw ->
-                        onScreenAction.invoke(
-                            LoginScreenAction.OnLoginRequest(username, pw)
-                        )
-                    }
-                )
-            }
+                AnimatedVisibility(
+                    visible = screenType == ScreenType.Login,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    val initialUserName =
+                        if (requestState is RequestState.Done && requestState.action is LoginRequestAction.SignUp) {
+                            (requestState.action as LoginRequestAction.SignUp).username
+                        } else ""
+                    LoginCredentialsInputUi(
+                        initialUserName = initialUserName,
+                        onShowSignUpInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
+                        onLogin = { username, pw ->
+                            onScreenAction.invoke(
+                                LoginScreenAction.OnLoginRequest(username, pw)
+                            )
+                        }
+                    )
+                }
 
-            AnimatedVisibility(
-                visible = screenType == ScreenType.SignUp
-            ) {
-                SignUpCredentialsInputUi(
-                    onShowLoginInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
-                    onSignUp = { username, pw ->
-                        onScreenAction.invoke(
-                            LoginScreenAction.OnSignUpRequest(username, pw)
-                        )
-                    }
-                )
+                AnimatedVisibility(
+                    visible = screenType == ScreenType.SignUp,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    SignUpCredentialsInputUi(
+                        onShowLoginInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
+                        onSignUp = { username, pw ->
+                            onScreenAction.invoke(
+                                LoginScreenAction.OnSignUpRequest(username, pw)
+                            )
+                        }
+                    )
+                }
             }
         }
 

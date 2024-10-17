@@ -1,5 +1,7 @@
 package com.demoapp.feature.records
 
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,10 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
 import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.feature.core.state.FetchState
+import com.demo.app.feature.core.state.RequestState
 import com.demoapp.feature.records.composable.WeatherLogRowUi
 
 @Composable
@@ -27,6 +31,8 @@ internal fun RecordsRoute(
 ) {
     val fetchState by viewModel.fetchState.collectAsState()
     val weatherLogs by viewModel.logs.collectAsState()
+
+    Log.i("checker", "logs: $weatherLogs")
 
    RecordsScreen(
        weatherLogs = weatherLogs,
@@ -59,13 +65,18 @@ private fun RecordsScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
                 items = weatherLogs
             ) { item ->
                 WeatherLogRowUi(weatherLog = item)
             }
+        }
+
+        if (fetchState == FetchState.Loading) {
+            LoadingAnimUi()
         }
     }
 }

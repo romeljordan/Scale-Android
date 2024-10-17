@@ -8,10 +8,14 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.demo.app.data.core.PreferencesKey
 import com.demo.app.data.core.datasource.AuthRemoteDataSourceImpl
 import com.demo.app.domain.core.model.Session
+import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.repository.AuthRepository
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import org.json.JSONObject
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -63,10 +67,20 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun logs(userId: Int): List<String> { // TODO: update to domain model
+    override suspend fun logs(userId: Int): List<WeatherLog> {
         val response = dataSource.logs(userId)
         return if (response.isSuccessful) {
-            response.body()?.logs ?: throw Throwable("Missing body")
+            response.body()?.let{
+                val entries = mutableListOf<WeatherLog>()
+                val jsonObject = JSONObject(it.logs)
+                val items = jsonObject.getJSONArray("logs")
+                for (i in 0..<items.length()) {
+                    val item = items.getJSONObject(i)
+                    val weatherLog = Gson().fromJson(item.getString("log"), WeatherLog::class.java)
+                    entries.add(weatherLog)
+                }
+                entries.toList()
+            } ?: throw Throwable("Missing body")
         } else {
             throw Throwable(response.errorBody()?.string())
         }

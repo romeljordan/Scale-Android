@@ -103,7 +103,7 @@ fun WeatherLogRowUi(
         }
 
         Text(
-            text = "Fetched at" + weatherLog.dateMillis.formatDate(FULL_DATE_TIME_12HR_FORMAT),
+            text = "Fetched at " + weatherLog.dateMillis.formatDate(FULL_DATE_TIME_12HR_FORMAT),
             style = appTypography.labelSmall.copy(
                 color = Color.White,
                 fontStyle = FontStyle.Italic
