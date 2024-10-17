@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.demo.app.core.design.R
+import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
 import com.demo.app.feature.core.OnNavResult
@@ -52,8 +53,6 @@ internal fun LoginRoute(
             }
             else -> { /* no-op*/ }
         }
-
-        onNavResult.invoke(LoginNavResult.MoveToHomeScreen)
     }
 
     LoginScreen(
@@ -152,6 +151,10 @@ private fun LoginScreen(
                     }
                 )
             }
+        }
+
+        if (requestState == RequestState.Loading) {
+            LoadingAnimUi()
         }
     }
 }
