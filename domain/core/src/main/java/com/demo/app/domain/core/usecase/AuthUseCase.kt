@@ -1,10 +1,12 @@
 package com.demo.app.domain.core.usecase
 
+import com.demo.app.domain.core.model.Session
+
 interface AuthUseCase {
     suspend fun login(
         username: String,
         password: String
-    ): Result<Boolean>
+    ): Result<Session>
 
     suspend fun signUp(
         username: String,
@@ -17,11 +19,11 @@ interface AuthUseCase {
 
     suspend fun session(
         sessionId: Int
-    ): Result<Boolean>
+    ): Result<Session>
 
     suspend fun logs(
         userId: Int
-    ): Result<Boolean>
+    ): Result<List<String>>
 
     suspend fun log(
         userId: Int,

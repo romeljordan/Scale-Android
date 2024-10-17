@@ -1,10 +1,12 @@
 package com.demo.app.domain.core.repository
 
+import com.demo.app.domain.core.model.Session
+
 interface AuthRepository {
     suspend fun login(
         username: String,
         password: String
-    ): Boolean
+    ): Session
 
     suspend fun signUp(
         username: String,
@@ -17,11 +19,11 @@ interface AuthRepository {
 
     suspend fun session(
         sessionId: Int
-    ): Boolean
+    ): Session
 
     suspend fun logs(
         userId: Int
-    ): Boolean
+    ): List<String>
 
     suspend fun log(
         userId: Int,

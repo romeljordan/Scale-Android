@@ -1,4 +1,4 @@
-package com.demo.app.di.usecase
+package com.demo.app.scale.di.usecase
 
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.AuthUseCaseImpl

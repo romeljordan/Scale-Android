@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,11 +27,16 @@ import com.demo.app.core.design.theme.appTypography
 
 @Composable
 internal fun LoginCredentialsInputUi(
+    initialUserName: String = "",
     onShowSignUpInput: () -> Unit,
     onLogin: (username: String, password: String) -> Unit
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    LaunchedEffect(initialUserName) {
+        username = initialUserName
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth(0.85f),

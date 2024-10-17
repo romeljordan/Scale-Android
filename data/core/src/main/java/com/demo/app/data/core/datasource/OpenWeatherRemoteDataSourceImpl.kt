@@ -20,7 +20,8 @@ class OpenWeatherRemoteDataSourceImpl @Inject constructor(
         return api.currentWeather(
             latitude = latitude,
             longitude = longitude,
-            apiKey = context.getString(R.string.open_weather_api_key)
+            apiKey = context.getString(R.string.open_weather_api_key),
+            unit = "metric"
         )
     }
 }

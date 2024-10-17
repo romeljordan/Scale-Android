@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.hilt)
+    kotlin("kapt")
 }
 
 android {
@@ -42,6 +44,8 @@ dependencies {
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.hilt.android)
     implementation(libs.gson)
+    implementation(libs.androidx.datastore)
+    kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -12,12 +12,13 @@ data class CurrentWeatherDto(
     fun toDomainModel(): CurrentWeather = CurrentWeather(
         city = name,
         country = sys.country,
-        temperature = main.temp,
+        temp = main.temp,
         type = weather.firstOrNull()?.main ?: "",
         typeDescription = weather.firstOrNull()?.description ?: "",
         icon = weather.firstOrNull()?.icon ?: "",
         sunset = sys.sunset,
-        sunrise = sys.sunrise
+        sunrise = sys.sunrise,
+        dateMillis = System.currentTimeMillis()
     )
 }
 
