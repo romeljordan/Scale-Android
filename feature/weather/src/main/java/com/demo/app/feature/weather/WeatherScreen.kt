@@ -8,13 +8,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,13 +45,27 @@ fun WeatherRoute(
     val fetchState by viewModel.fetchState.collectAsState()
     val requestState by viewModel.requestState.collectAsState()
 
+    LaunchedEffect(requestState) {
+        when (val state = requestState) {
+            is RequestState.Done -> {
+                if (state.action == WeatherRequestAction.LogOut) {
+                    onNavResult.invoke(WeatherNavResult.OnLogOut)
+                }
+            }
+            else -> { /* no-op */ }
+        }
+    }
+
     currentWeather?.let {
         WeatherScreen(
             currentWeather = it,
             fetchState = fetchState,
             requestState = requestState,
             onScreenAction = { action ->
-
+                when(action) {
+                    WeatherScreenAction.OnRefresh -> viewModel.requestLocation()
+                    WeatherScreenAction.OnLogOut -> viewModel.logOut()
+                }
             }
         )
     } ?: Box(
@@ -68,45 +87,68 @@ private fun WeatherScreen(
     Scaffold(
         containerColor = AppColor.primaryBlue
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+        Box(
+            modifier = Modifier.padding(innerPadding)
         ) {
-            Text(
-                text = "Hello, username!",
-                style = appTypography.titleLarge.copy(
-                    color = Color.White
-                )
-            )
-
-            WeatherPreviewUi(
-                city = currentWeather.city,
-                country = currentWeather.country,
-                temperature = currentWeather.temp,
-                description = currentWeather.type,
-                dateMillis = currentWeather.dateMillis,
-                icon = currentWeather.icon
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TimeInfoBoxUi(
-                    modifier = Modifier.weight(1f),
-                    icon = R.drawable.ic_sunny_filled_24,
-                    title = "Sunrise",
-                    dateMillis = currentWeather.sunrise
+                Text(
+                    text = "Today's Weather",
+                    style = appTypography.titleLarge.copy(
+                        color = Color.White
+                    )
                 )
 
-                TimeInfoBoxUi(
-                    modifier = Modifier.weight(1f),
-                    icon = R.drawable.ic_sunny_outline_24,
-                    title = "Sunset",
-                    dateMillis = currentWeather.sunset
+                WeatherPreviewUi(
+                    city = currentWeather.city,
+                    country = currentWeather.country,
+                    temperature = currentWeather.temp,
+                    description = currentWeather.type,
+                    dateMillis = currentWeather.dateMillis,
+                    icon = currentWeather.icon,
+                    onRefresh = {
+                        onScreenAction.invoke(WeatherScreenAction.OnRefresh)
+                    }
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TimeInfoBoxUi(
+                        modifier = Modifier.weight(1f),
+                        icon = R.drawable.ic_sunny_filled_24,
+                        tintColor = AppColor.yellow,
+                        title = "Sunrise",
+                        dateMillis = currentWeather.sunrise
+                    )
+
+                    TimeInfoBoxUi(
+                        modifier = Modifier.weight(1f),
+                        icon = R.drawable.ic_sunny_filled_24,
+                        title = "Sunset",
+                        dateMillis = currentWeather.sunset,
+                        tintColor = AppColor.orange
+                    )
+                }
+            }
+
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.TopEnd),
+                onClick = {
+                    onScreenAction.invoke(WeatherScreenAction.OnLogOut)
+                }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_logout_24),
+                    contentDescription = null,
+                    tint = Color.White
                 )
             }
         }

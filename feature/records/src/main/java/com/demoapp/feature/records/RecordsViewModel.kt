@@ -1,5 +1,6 @@
 package com.demoapp.feature.records
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.app.data.core.Session
 import com.demo.app.domain.core.model.WeatherLog
@@ -32,8 +33,10 @@ class RecordsViewModel @Inject constructor(
         Session.current?.let { session ->
             updateFetchState(FetchState.Loading)
             useCase.logs(session.userId).onSuccess {
+                _logs.emit(it)
                 updateFetchState(FetchState.Idle)
             }.onFailure {
+                Log.i("checker", "failed records result: $it")
                 updateFetchState(FetchState.Error(it.message))
             }
         }

@@ -1,8 +1,10 @@
 package com.demo.app.feature.login
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -29,6 +31,7 @@ import com.demo.app.core.design.R
 import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
+import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.core.util.OnNavResult
 import com.demo.app.feature.login.composable.LoginCredentialsInputUi
@@ -43,12 +46,14 @@ internal fun LoginRoute(
 ) {
     val screenType by viewModel.screenType.collectAsState()
     val requestState by viewModel.requestState.collectAsState()
+    val fetchState by viewModel.fetchState.collectAsState()
 
     LaunchedEffect(requestState) {
         when (val state = requestState) {
             is RequestState.Done -> {
                 if (state.action is LoginRequestAction.LoginRequest) {
                     onNavResult.invoke(LoginNavResult.MoveToHomeScreen)
+                    viewModel.updateRequestState(RequestState.Idle)
                 }
             }
             else -> { /* no-op*/ }
@@ -57,7 +62,8 @@ internal fun LoginRoute(
 
     LoginScreen(
         screenType = screenType,
-        requestState = requestState
+        requestState = requestState,
+        fetchState = fetchState
     ) { action ->
         when (action) {
             LoginScreenAction.OnSwitchScreen -> {
@@ -79,6 +85,7 @@ internal fun LoginRoute(
 private fun LoginScreen(
     screenType: ScreenType,
     requestState: RequestState,
+    fetchState: FetchState,
     onScreenAction: (action: LoginScreenAction) -> Unit
 ) {
     Scaffold(
@@ -88,9 +95,9 @@ private fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Box(modifier = Modifier.fillMaxHeight(0.1f))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -125,39 +132,50 @@ private fun LoginScreen(
                 )
             }
 
-            // TODO: fix start and exit animation (slide in and out)
-            AnimatedVisibility(
-                visible = screenType == ScreenType.Login,
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                val initialUserName = if (requestState is RequestState.Done && requestState.action is LoginRequestAction.SignUp) {
-                    (requestState.action as LoginRequestAction.SignUp).username
-                } else ""
-                LoginCredentialsInputUi(
-                    initialUserName = initialUserName,
-                    onShowSignUpInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
-                    onLogin = { username, pw ->
-                        onScreenAction.invoke(
-                            LoginScreenAction.OnLoginRequest(username, pw)
-                        )
-                    }
-                )
-            }
+                androidx.compose.animation.AnimatedVisibility (
+                    visible = screenType == ScreenType.Login,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    val initialUserName =
+                        if (requestState is RequestState.Done && requestState.action is LoginRequestAction.SignUp) {
+                            (requestState.action as LoginRequestAction.SignUp).username
+                        } else ""
+                    LoginCredentialsInputUi(
+                        initialUserName = initialUserName,
+                        onShowSignUpInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
+                        onLogin = { username, pw ->
+                            onScreenAction.invoke(
+                                LoginScreenAction.OnLoginRequest(username, pw)
+                            )
+                        }
+                    )
+                }
 
-            AnimatedVisibility(
-                visible = screenType == ScreenType.SignUp
-            ) {
-                SignUpCredentialsInputUi(
-                    onShowLoginInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
-                    onSignUp = { username, pw ->
-                        onScreenAction.invoke(
-                            LoginScreenAction.OnSignUpRequest(username, pw)
-                        )
-                    }
-                )
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = screenType == ScreenType.SignUp,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    SignUpCredentialsInputUi(
+                        onShowLoginInput = { onScreenAction.invoke(LoginScreenAction.OnSwitchScreen) },
+                        onSignUp = { username, pw ->
+                            onScreenAction.invoke(
+                                LoginScreenAction.OnSignUpRequest(username, pw)
+                            )
+                        }
+                    )
+                }
             }
         }
 
-        if (requestState == RequestState.Loading) {
+        if (requestState == RequestState.Loading || fetchState == FetchState.Loading) {
             LoadingAnimUi()
         }
     }
@@ -169,6 +187,7 @@ private fun PreviewHomeScreen() {
     LoginScreen(
         screenType = ScreenType.Login,
         onScreenAction = { },
-        requestState = RequestState.Idle
+        requestState = RequestState.Idle,
+        fetchState = FetchState.Idle
     )
 }

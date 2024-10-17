@@ -1,6 +1,7 @@
 package com.demo.app.domain.core.repository
 
 import com.demo.app.domain.core.model.Session
+import com.demo.app.domain.core.model.WeatherLog
 
 interface AuthRepository {
     suspend fun login(
@@ -23,10 +24,12 @@ interface AuthRepository {
 
     suspend fun logs(
         userId: Int
-    ): List<String>
+    ): List<WeatherLog>
 
     suspend fun log(
         userId: Int,
         jsonLog: String
     ): Boolean
+
+    suspend fun fetchCurrentSessionKey(): String
 }

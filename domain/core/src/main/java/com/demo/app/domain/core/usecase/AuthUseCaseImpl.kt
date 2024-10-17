@@ -1,6 +1,7 @@
 package com.demo.app.domain.core.usecase
 
 import com.demo.app.domain.core.model.Session
+import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.repository.AuthRepository
 import javax.inject.Inject
 
@@ -39,7 +40,7 @@ class AuthUseCaseImpl @Inject constructor(
         }
     }
 
-    override suspend fun logs(userId: Int): Result<List<String>> {
+    override suspend fun logs(userId: Int): Result<List<WeatherLog>> {
         return try {
             Result.success(repository.logs(userId))
         } catch (error: Throwable) {
@@ -52,6 +53,14 @@ class AuthUseCaseImpl @Inject constructor(
             Result.success(repository.log(userId, jsonLog))
         } catch (error: Throwable) {
             Result.failure(error)
+        }
+    }
+
+    override suspend fun fetchCurrentSessionKey(): Result<String> {
+        return try {
+            Result.success(repository.fetchCurrentSessionKey())
+        } catch (e: Throwable) {
+            Result.failure(e)
         }
     }
 }
