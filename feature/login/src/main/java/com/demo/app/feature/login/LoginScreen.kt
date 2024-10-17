@@ -29,8 +29,8 @@ import com.demo.app.core.design.R
 import com.demo.app.core.design.composable.LoadingAnimUi
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.core.design.theme.appTypography
-import com.demo.app.feature.core.OnNavResult
 import com.demo.app.feature.core.state.RequestState
+import com.demo.app.feature.core.util.OnNavResult
 import com.demo.app.feature.login.composable.LoginCredentialsInputUi
 import com.demo.app.feature.login.composable.SignUpCredentialsInputUi
 import com.demo.app.feature.login.navigation.LoginNavResult

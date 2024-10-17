@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,8 @@ internal fun InputTextField(
             onValueChange.invoke(it)
         },
         keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.None
+            capitalization = KeyboardCapitalization.None,
+            keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Unspecified
         ),
         shape = RoundedCornerShape(10.dp),
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,

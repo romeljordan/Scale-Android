@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.hilt.android)
     implementation(libs.gson)
+    implementation(libs.androidx.datastore)
     kapt(libs.hilt.compiler)
 
     testImplementation(libs.junit)

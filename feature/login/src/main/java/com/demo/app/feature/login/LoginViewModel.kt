@@ -35,13 +35,9 @@ class LoginViewModel @Inject constructor(
     )
 
     init {
-        /*viewModelScope.launch {
-            useCase.logout(0).onSuccess {
-                Log.i("QWERTY", "logout successful: $it")
-            }.onFailure {
-                Log.i("QWERTY", "logout not successful")
-            }
-        }*/
+        // TODO: check if has existing session key
+        // if yes, call session api
+        // if success go to home screen
     }
 
     fun signUp(
