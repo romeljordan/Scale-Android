@@ -44,7 +44,7 @@ class LoginViewModel @Inject constructor(
         fetchCurrentSession()
     }
 
-    private fun fetchCurrentSession() = viewModelScope.launch {
+    fun fetchCurrentSession() = viewModelScope.launch {
         updateFetchState(FetchState.Loading)
         useCase.fetchCurrentSessionKey().onSuccess {
             updateFetchState(FetchState.Idle)
