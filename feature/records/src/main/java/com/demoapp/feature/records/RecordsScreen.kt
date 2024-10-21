@@ -2,6 +2,7 @@ package com.demoapp.feature.records
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -52,8 +53,9 @@ private fun RecordsScreen(
                     .padding(16.dp)
             ) {
                 Text(
+                    modifier = Modifier.align(Alignment.CenterStart),
                     text = "Weather logs",
-                    style = appTypography.titleMedium.copy(
+                    style = appTypography.titleSmall.copy(
                         color = Color.White
                     )
                 )
@@ -63,12 +65,12 @@ private fun RecordsScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .padding(16.dp),
+                .fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                items = weatherLogs
+                items = weatherLogs.sortedBy { it.dateMillis }
             ) { item ->
                 WeatherLogRowUi(weatherLog = item)
             }
@@ -100,11 +102,11 @@ private fun PreviewRecordsScreen() {
     RecordsScreen(
         weatherLogs = listOf(
             WeatherLog(
-                city = "Hello",
-                country = "sda",
+                city = "City",
+                country = "CO",
                 temp = 30.1,
                 type = "Rain",
-                icon = "10n",
+                icon = "10d",
                 dateMillis = System.currentTimeMillis()
             )
         ),
