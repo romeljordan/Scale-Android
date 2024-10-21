@@ -5,6 +5,7 @@ import java.util.Locale
 
 const val FULL_DATE_TIME_12HR_FORMAT = "E, dd MMM yyyy, hh:mm a"
 const val TIME_12HR_FORMAT = "hh:mm a"
+const val DATE_FORMAT = "MMM dd, hh:mm a"
 
 fun Long.formatDate(format: String): String {
     return SimpleDateFormat(
