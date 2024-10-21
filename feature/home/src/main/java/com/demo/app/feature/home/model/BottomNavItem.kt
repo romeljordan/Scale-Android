@@ -15,12 +15,12 @@ enum class BottomNavItem(
         route = WEATHER_NAV_ROUTE,
         selectedIcon = R.drawable.ic_sunny_filled_24,
         unselectedIcon = R.drawable.ic_sunny_outline_24,
-        title = "Current Weather"
+        title = "Weather"
     ),
     Records(
         route = RECORDS_NAV_ROUTE,
-        selectedIcon = R.drawable.ic_event_note_filled_24,
-        unselectedIcon = R.drawable.ic_event_note_outline_24,
-        title = "Temperature Records"
+        selectedIcon = R.drawable.ic_view_list_filled_24,
+        unselectedIcon = R.drawable.ic_view_list_outline_24,
+        title = "Logs"
     )
 }

@@ -1,5 +1,6 @@
 package com.demo.app.feature.weather
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.app.data.core.Session
 import com.demo.app.domain.core.model.CurrentWeather
@@ -14,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +37,13 @@ class WeatherViewModel @Inject constructor(
         initialValue = null
     )
 
+    private val _fetchedDate = MutableStateFlow(System.currentTimeMillis())
+    val fetchedDate = _fetchedDate.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(1_000),
+        initialValue = System.currentTimeMillis()
+    )
+
     init {
         requestLocation()
     }
@@ -43,8 +52,10 @@ class WeatherViewModel @Inject constructor(
         updateFetchState(FetchState.Loading)
         useCase.fetchOpenWeather(latitude, longitude).onSuccess {
             _currentWeather.emit(it)
+            _fetchedDate.update { System.currentTimeMillis() }
             updateFetchState(FetchState.Idle)
         }.onFailure {
+            Log.e("ScaleLog", "Failed weather api call result: $it")
             updateFetchState(FetchState.Error(it.message))
         }
     }
@@ -63,6 +74,7 @@ class WeatherViewModel @Inject constructor(
             authUseCase.logout(session.userId).onSuccess {
                 updateRequestState(RequestState.Done(WeatherRequestAction.LogOut))
             }.onFailure {
+                Log.e("ScaleLog", "Failed auth log out api call result: $it")
                 updateRequestState(RequestState.Error(it.message))
             }
         }

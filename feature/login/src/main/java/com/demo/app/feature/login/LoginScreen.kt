@@ -14,11 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -88,8 +91,29 @@ private fun LoginScreen(
     fetchState: FetchState,
     onScreenAction: (action: LoginScreenAction) -> Unit
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(requestState) {
+        when (requestState) {
+            is RequestState.Done -> {
+                if (requestState.action is LoginRequestAction.SignUp) {
+                    snackBarHostState.showSnackbar("Account successfully created! Log in to access the current weather in your area.")
+                }
+            }
+            is RequestState.Error -> {
+                requestState.error?.let {
+                    snackBarHostState.showSnackbar(it)
+                }
+            }
+            else -> { /* no-op*/ }
+        }
+    }
+
     Scaffold(
-        containerColor = AppColor.primaryBlue
+        containerColor = AppColor.primaryBlue,
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        }
     ) { innerPadding ->
         Column (
             modifier = Modifier

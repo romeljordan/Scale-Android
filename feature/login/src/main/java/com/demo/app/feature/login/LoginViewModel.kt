@@ -55,12 +55,14 @@ class LoginViewModel @Inject constructor(
                 useCase.session(it.toInt()).onSuccess { session ->
                     Session.current = session
                     updateRequestState(RequestState.Done(LoginRequestAction.LoginRequest))
-                }.onFailure {
+                }.onFailure { e ->
+                    Log.e("ScaleLog", "Failed auth session api call result: $e")
                     updateRequestState(RequestState.Idle)
                 }
             }
         }.onFailure {
-            updateFetchState(FetchState.Error(it.message))
+            Log.e("ScaleLog", "Failed local session api call result: $it")
+            updateRequestState(RequestState.Idle)
         }
     }
 
@@ -73,6 +75,7 @@ class LoginViewModel @Inject constructor(
             switchScreenType()
             updateRequestState(RequestState.Done(LoginRequestAction.SignUp(username)))
         }.onFailure {
+            Log.e("ScaleLog", "Failed auth sign up api call result: $it")
             updateRequestState(RequestState.Error(it.message))
         }
     }
@@ -86,6 +89,7 @@ class LoginViewModel @Inject constructor(
             Session.current = it
             updateRequestState(RequestState.Done(LoginRequestAction.LoginRequest))
         }.onFailure {
+            Log.e("ScaleLog", "Failed auth login api call result: $it")
             updateRequestState(RequestState.Error(it.message))
         }
     }
