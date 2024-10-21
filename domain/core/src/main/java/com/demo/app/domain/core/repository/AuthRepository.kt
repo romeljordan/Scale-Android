@@ -2,6 +2,7 @@ package com.demo.app.domain.core.repository
 
 import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.model.WeatherLog
+import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     suspend fun login(

@@ -8,10 +8,12 @@ data class SessionResultDto(
     @SerializedName("user_id")
     val userId: Int,
     @SerializedName("session_id")
-    val sessionId: Int
+    val sessionId: Int,
+    val token: String?
 ) {
     fun toDomainModel(): Session = Session(
         userId = userId,
-        sessionId = sessionId
+        sessionId = sessionId,
+        accessToken = token ?: ""
     )
 }

@@ -10,6 +10,7 @@ import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.repository.AuthRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.json.JSONObject
@@ -25,6 +26,9 @@ class AuthRepositoryImpl @Inject constructor(
             response.body()?.let {
                 dataStore.edit { preference ->
                     preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] = it.sessionId.toString()
+                    it.token?.let { accessToken ->
+                        preference[stringPreferencesKey(PreferencesKey.ACCESS_TOKEN)] = accessToken
+                    }
                 }
                 it.toDomainModel()
             } ?: throw Throwable("Missing body")
@@ -46,7 +50,8 @@ class AuthRepositoryImpl @Inject constructor(
         val response = dataSource.logout(userId)
         return if (response.isSuccessful) {
             dataStore.edit { preference ->
-                preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] = ""
+                preference.remove(stringPreferencesKey(PreferencesKey.SESSION_KEY))
+                preference.remove(stringPreferencesKey(PreferencesKey.ACCESS_TOKEN))
             }
             response.body()?.success ?: throw Throwable("Missing body")
         } else {
