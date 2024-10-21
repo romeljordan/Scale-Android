@@ -16,6 +16,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -111,6 +113,7 @@ private fun WeatherScreen(
 ) {
     val nightMode by remember { mutableStateOf(currentWeather.icon.contains("n")) }
     var isMenuExpanded by remember { mutableStateOf(false) }
+    val snackBarHostState = remember { SnackbarHostState() }
     val (bgColor, textColor) = colorMode(nightMode)
 
     Scaffold(
@@ -156,6 +159,9 @@ private fun WeatherScreen(
                     )
                 }
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         }
     ) { innerPaddingValues ->
         Column(

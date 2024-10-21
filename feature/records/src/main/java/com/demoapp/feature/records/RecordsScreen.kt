@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -61,9 +63,13 @@ private fun RecordsScreen(
 ) {
     var isSortedByNewest by remember { mutableStateOf(true) }
     var isMenuExpanded by remember { mutableStateOf(false) }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         containerColor = AppColor.primaryBlue,
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
         topBar = {
             Row(
                 modifier = Modifier
