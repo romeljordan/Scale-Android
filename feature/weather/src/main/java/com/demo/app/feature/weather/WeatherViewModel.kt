@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +36,13 @@ class WeatherViewModel @Inject constructor(
         initialValue = null
     )
 
+    private val _fetchedDate = MutableStateFlow(System.currentTimeMillis())
+    val fetchedDate = _fetchedDate.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(1_000),
+        initialValue = System.currentTimeMillis()
+    )
+
     init {
         requestLocation()
     }
@@ -43,6 +51,7 @@ class WeatherViewModel @Inject constructor(
         updateFetchState(FetchState.Loading)
         useCase.fetchOpenWeather(latitude, longitude).onSuccess {
             _currentWeather.emit(it)
+            _fetchedDate.update { System.currentTimeMillis() }
             updateFetchState(FetchState.Idle)
         }.onFailure {
             updateFetchState(FetchState.Error(it.message))
