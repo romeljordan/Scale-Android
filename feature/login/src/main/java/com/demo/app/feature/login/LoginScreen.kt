@@ -93,6 +93,22 @@ private fun LoginScreen(
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
 
+    LaunchedEffect(requestState) {
+        when (requestState) {
+            is RequestState.Done -> {
+                if (requestState.action is LoginRequestAction.SignUp) {
+                    snackBarHostState.showSnackbar("Account successfully created! Log in to access the current weather in your area.")
+                }
+            }
+            is RequestState.Error -> {
+                requestState.error?.let {
+                    snackBarHostState.showSnackbar(it)
+                }
+            }
+            else -> { /* no-op*/ }
+        }
+    }
+
     Scaffold(
         containerColor = AppColor.primaryBlue,
         snackbarHost = {

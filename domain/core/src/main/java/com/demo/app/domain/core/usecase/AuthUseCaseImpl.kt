@@ -19,7 +19,7 @@ class AuthUseCaseImpl @Inject constructor(
     override suspend fun signUp(username: String, password: String): Result<Boolean> {
         return try {
             Result.success(repository.signUp(username, password))
-        } catch (error: Throwable) {
+        } catch (error: Exception) {
             Result.failure(error)
         }
     }
@@ -27,7 +27,7 @@ class AuthUseCaseImpl @Inject constructor(
     override suspend fun logout(userId: Int): Result<Boolean> {
         return try {
             Result.success(repository.logout(userId))
-        } catch (error: Throwable) {
+        } catch (error: Exception) {
             Result.failure(error)
         }
     }
@@ -35,7 +35,7 @@ class AuthUseCaseImpl @Inject constructor(
     override suspend fun session(sessionId: Int): Result<Session> {
         return try {
             Result.success(repository.session(sessionId))
-        } catch (error: Throwable) {
+        } catch (error: Exception) {
             Result.failure(error)
         }
     }
@@ -43,7 +43,7 @@ class AuthUseCaseImpl @Inject constructor(
     override suspend fun logs(userId: Int): Result<List<WeatherLog>> {
         return try {
             Result.success(repository.logs(userId))
-        } catch (error: Throwable) {
+        } catch (error: Exception) {
             Result.failure(error)
         }
     }
@@ -51,7 +51,7 @@ class AuthUseCaseImpl @Inject constructor(
     override suspend fun log(userId: Int, jsonLog: String): Result<Boolean> {
         return try {
             Result.success(repository.log(userId, jsonLog))
-        } catch (error: Throwable) {
+        } catch (error: Exception) {
             Result.failure(error)
         }
     }
@@ -59,7 +59,7 @@ class AuthUseCaseImpl @Inject constructor(
     override suspend fun fetchCurrentSessionKey(): Result<String> {
         return try {
             Result.success(repository.fetchCurrentSessionKey())
-        } catch (e: Throwable) {
+        } catch (e: Exception) {
             Result.failure(e)
         }
     }

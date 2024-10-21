@@ -6,11 +6,12 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.demo.app.data.core.PreferencesKey
 import com.demo.app.data.core.datasource.AuthRemoteDataSourceImpl
+import com.demo.app.domain.core.error.MissingResponseBodyException
+import com.demo.app.domain.core.error.ServerErrorException
 import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.repository.AuthRepository
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.json.JSONObject
@@ -31,18 +32,18 @@ class AuthRepositoryImpl @Inject constructor(
                     }
                 }
                 it.toDomainModel()
-            } ?: throw Throwable("Missing body")
+            } ?: throw MissingResponseBodyException()
         } else {
-            throw Throwable(response.errorBody()?.string())
+            throw ServerErrorException("Invalid login credentials")
         }
     }
 
     override suspend fun signUp(username: String, password: String): Boolean {
         val response = dataSource.signup(username, password)
         return if (response.isSuccessful) {
-            response.body()?.success ?: throw Throwable("Missing body")
+            response.body()?.success ?: throw MissingResponseBodyException()
         } else {
-            throw Throwable(response.errorBody()?.string())
+            throw ServerErrorException("Invalid sign up")
         }
     }
 
@@ -53,18 +54,18 @@ class AuthRepositoryImpl @Inject constructor(
                 preference.remove(stringPreferencesKey(PreferencesKey.SESSION_KEY))
                 preference.remove(stringPreferencesKey(PreferencesKey.ACCESS_TOKEN))
             }
-            response.body()?.success ?: throw Throwable("Missing body")
+            response.body()?.success ?: throw MissingResponseBodyException()
         } else {
-            throw Throwable(response.errorBody()?.string())
+            throw ServerErrorException("Unsuccessful log out")
         }
     }
 
     override suspend fun session(sessionId: Int): Session {
         val response = dataSource.session(sessionId)
         return if (response.isSuccessful) {
-            response.body()?.toDomainModel() ?: throw Throwable("Missing body")
+            response.body()?.toDomainModel() ?: throw MissingResponseBodyException()
         } else {
-            throw Throwable(response.errorBody()?.string())
+            throw ServerErrorException("Session key is not valid")
         }
     }
 
@@ -81,18 +82,18 @@ class AuthRepositoryImpl @Inject constructor(
                     entries.add(weatherLog)
                 }
                 entries.toList()
-            } ?: throw Throwable("Missing body")
+            } ?: throw MissingResponseBodyException()
         } else {
-            throw Throwable(response.errorBody()?.string())
+            throw ServerErrorException(response.errorBody()?.string() ?: "")
         }
     }
 
     override suspend fun log(userId: Int, jsonLog: String): Boolean {
         val response = dataSource.log(userId, jsonLog)
         return if (response.isSuccessful) {
-            response.body()?.success ?: throw Throwable("Missing body")
+            response.body()?.success ?: throw MissingResponseBodyException()
         } else {
-            throw Throwable(response.errorBody()?.string())
+            throw ServerErrorException(response.errorBody()?.string() ?: "")
         }
     }
 

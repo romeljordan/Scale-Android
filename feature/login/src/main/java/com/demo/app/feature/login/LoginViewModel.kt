@@ -46,7 +46,7 @@ class LoginViewModel @Inject constructor(
 
     fun fetchCurrentSession() = viewModelScope.launch {
         updateFetchState(FetchState.Loading)
-        useCase.fetchCurrentSessionKey().onSuccess { it ->
+        useCase.fetchCurrentSessionKey().onSuccess {
             updateFetchState(FetchState.Idle)
             if (it.isBlank()) {
                 updateFetchState(FetchState.Idle)
@@ -62,7 +62,7 @@ class LoginViewModel @Inject constructor(
             }
         }.onFailure {
             Log.e("ScaleLog", "Failed local session api call result: $it")
-            updateFetchState(FetchState.Error(it.message))
+            updateRequestState(RequestState.Idle)
         }
     }
 
