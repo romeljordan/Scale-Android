@@ -1,5 +1,6 @@
 package com.demo.app.feature.weather
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.app.data.core.Session
 import com.demo.app.domain.core.model.CurrentWeather
@@ -54,6 +55,7 @@ class WeatherViewModel @Inject constructor(
             _fetchedDate.update { System.currentTimeMillis() }
             updateFetchState(FetchState.Idle)
         }.onFailure {
+            Log.e("ScaleLog", "Failed weather api call result: $it")
             updateFetchState(FetchState.Error(it.message))
         }
     }
@@ -72,6 +74,7 @@ class WeatherViewModel @Inject constructor(
             authUseCase.logout(session.userId).onSuccess {
                 updateRequestState(RequestState.Done(WeatherRequestAction.LogOut))
             }.onFailure {
+                Log.e("ScaleLog", "Failed auth log out api call result: $it")
                 updateRequestState(RequestState.Error(it.message))
             }
         }

@@ -1,6 +1,5 @@
 package com.demo.app.data.core.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -11,8 +10,7 @@ import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.repository.AuthRepository
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.json.JSONObject
@@ -28,8 +26,10 @@ class AuthRepositoryImpl @Inject constructor(
             response.body()?.let {
                 dataStore.edit { preference ->
                     preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] = it.sessionId.toString()
+                    it.token?.let { accessToken ->
+                        preference[stringPreferencesKey(PreferencesKey.ACCESS_TOKEN)] = accessToken
+                    }
                 }
-                Log.i("checker", "login: ${it.userId}, ${it.sessionId} | ${it.success}")
                 it.toDomainModel()
             } ?: throw Throwable("Missing body")
         } else {
@@ -50,7 +50,8 @@ class AuthRepositoryImpl @Inject constructor(
         val response = dataSource.logout(userId)
         return if (response.isSuccessful) {
             dataStore.edit { preference ->
-                preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] = ""
+                preference.remove(stringPreferencesKey(PreferencesKey.SESSION_KEY))
+                preference.remove(stringPreferencesKey(PreferencesKey.ACCESS_TOKEN))
             }
             response.body()?.success ?: throw Throwable("Missing body")
         } else {
