@@ -1,6 +1,5 @@
 package com.demo.app.data.core.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -11,8 +10,6 @@ import com.demo.app.domain.core.model.Session
 import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.repository.AuthRepository
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import org.json.JSONObject
@@ -29,7 +26,6 @@ class AuthRepositoryImpl @Inject constructor(
                 dataStore.edit { preference ->
                     preference[stringPreferencesKey(PreferencesKey.SESSION_KEY)] = it.sessionId.toString()
                 }
-                Log.i("checker", "login: ${it.userId}, ${it.sessionId} | ${it.success}")
                 it.toDomainModel()
             } ?: throw Throwable("Missing body")
         } else {

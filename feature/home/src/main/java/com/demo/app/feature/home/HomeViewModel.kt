@@ -35,10 +35,11 @@ class HomeViewModel @Inject constructor(
                 authUseCase.log(session.userId, jsonString).onSuccess {
                     updateFetchState(FetchState.Idle)
                 }.onFailure {
+                    Log.e("ScaleLog", "Failed auth log api call result: $it")
                     updateFetchState(FetchState.Error(it.message))
                 }
             }.onFailure {
-                Log.e("ScaleLog", "Fetch error: $it")
+                Log.e("ScaleLog", "Failed weather api call result: $it")
                 updateFetchState(FetchState.Error(it.message))
             }
         }

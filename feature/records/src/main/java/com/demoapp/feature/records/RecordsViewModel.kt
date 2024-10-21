@@ -36,7 +36,7 @@ class RecordsViewModel @Inject constructor(
                 _logs.emit(it)
                 updateFetchState(FetchState.Idle)
             }.onFailure {
-                Log.i("checker", "failed records result: $it")
+                Log.e("ScaleLog", "Failed api call result: $it")
                 updateFetchState(FetchState.Error(it.message))
             }
         }
