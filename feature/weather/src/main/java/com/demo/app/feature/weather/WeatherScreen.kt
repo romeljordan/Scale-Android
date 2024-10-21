@@ -17,13 +17,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -40,7 +40,9 @@ import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.demo.app.core.design.theme.appTypography
 import com.demo.app.core.design.R
+import com.demo.app.core.design.composable.DropDownMenu
 import com.demo.app.core.design.composable.LoadingAnimUi
+import com.demo.app.core.design.composable.MenuItem
 import com.demo.app.core.design.theme.AppColor
 import com.demo.app.domain.core.model.CurrentWeather
 import com.demo.app.feature.core.util.OnNavResult
@@ -108,6 +110,7 @@ private fun WeatherScreen(
     onScreenAction: (action: WeatherScreenAction) -> Unit
 ) {
     val nightMode by remember { mutableStateOf(currentWeather.icon.contains("n")) }
+    var isMenuExpanded by remember { mutableStateOf(false) }
     val (bgColor, textColor) = colorMode(nightMode)
 
     Scaffold(
@@ -117,17 +120,39 @@ private fun WeatherScreen(
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                TextButton(
+                IconButton(
                     modifier = Modifier
                         .padding(horizontal = 4.dp)
                         .align(Alignment.CenterEnd),
-                    onClick = { }
+                    onClick = {
+                        isMenuExpanded = !isMenuExpanded
+                    }
                 ) {
-                    Text(
-                        text = "Log out",
-                        style = appTypography.labelSmall.copy(
-                            color = textColor
-                        )
+                    Icon(
+                        painter = painterResource(R.drawable.ic_menu_24),
+                        contentDescription = null,
+                        tint = textColor
+                    )
+                }
+
+                if (isMenuExpanded) {
+                    DropDownMenu(
+                        modifier = Modifier
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.BottomEnd),
+                        options = listOf(MenuItem.LogOut),
+                        onDismiss = {
+                            isMenuExpanded = false
+                        },
+                        onTapItem = { option ->
+                            when (option) {
+                                MenuItem.LogOut -> {
+                                    isMenuExpanded = false
+                                    onScreenAction.invoke(WeatherScreenAction.OnLogOut)
+                                }
+                                else -> { /* no-op */ }
+                            }
+                        }
                     )
                 }
             }
