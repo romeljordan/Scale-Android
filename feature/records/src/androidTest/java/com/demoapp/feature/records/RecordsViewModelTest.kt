@@ -4,12 +4,17 @@ import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.feature.core.state.FetchState
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
@@ -36,7 +41,19 @@ class RecordsViewModelTest {
             )
         }
 
-    private val viewModel = RecordsViewModel(useCase = mockUseCase)
+    private lateinit var viewModel: RecordsViewModel
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+
+        viewModel = RecordsViewModel(useCase = mockUseCase)
+    }
+
+    @After
+    fun teardown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun initial_weather_logs_list_size_is_empty() =

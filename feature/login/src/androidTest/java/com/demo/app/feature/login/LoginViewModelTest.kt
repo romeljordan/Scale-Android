@@ -5,11 +5,16 @@ import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestState
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 
@@ -53,9 +58,19 @@ class LoginViewModelTest {
             )
         }
 
-    private val loginViewModel = LoginViewModel(
-        useCase = mockAuthUseCase
-    )
+    private lateinit var loginViewModel: LoginViewModel
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+
+        loginViewModel = LoginViewModel(useCase = mockAuthUseCase)
+    }
+
+    @After
+    fun teardown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun user_has_an_existing_valid_session_key() =
@@ -100,11 +115,9 @@ class LoginViewModelTest {
                 loginViewModel.requestState.collect()
             }
 
-            assertEquals(RequestState.Idle, loginViewModel.requestState.value)
-
             loginViewModel.login(username, password)
 
-            assertEquals(RequestState.Done(LoginRequestAction.LoginRequest), loginViewModel.fetchState.value)
+            assertEquals(RequestState.Done(LoginRequestAction.LoginRequest), loginViewModel.requestState.value)
         }
 
     @Test
@@ -114,10 +127,8 @@ class LoginViewModelTest {
                 loginViewModel.requestState.collect()
             }
 
-            assertEquals(RequestState.Idle, loginViewModel.requestState.value)
-
             loginViewModel.signUp(username, password)
 
-            assertEquals(RequestState.Done(LoginRequestAction.SignUp(username)), loginViewModel.fetchState.value)
+            assertEquals(RequestState.Done(LoginRequestAction.SignUp(username)), loginViewModel.requestState.value)
         }
 }

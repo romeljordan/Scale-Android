@@ -10,12 +10,17 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.TaskCompletionSource
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
@@ -67,19 +72,27 @@ class WeatherViewModelTest {
         )
     }
 
-    private val viewModel = WeatherViewModel(
-        authUseCase = mockAuthUseCase,
-        useCase = mockWeatherUseCase,
-        fusedLocationProviderClient = fusedLocationProviderClient
-    )
+    private lateinit var viewModel: WeatherViewModel
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+
+        viewModel = WeatherViewModel(
+            authUseCase = mockAuthUseCase,
+            useCase = mockWeatherUseCase,
+            fusedLocationProviderClient = fusedLocationProviderClient
+        )
+    }
+
+    @After
+    fun teardown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
     fun initial_current_weather_is_empty() =
         runTest {
-            backgroundScope.launch(UnconfinedTestDispatcher((testScheduler))) {
-                viewModel.currentWeather.collect()
-            }
-
             assertEquals(FetchState.Idle, viewModel.fetchState.value)
             assertEquals(null, viewModel.currentWeather.value)
         }
@@ -110,8 +123,6 @@ class WeatherViewModelTest {
             }
 
             viewModel.logOut()
-
-            advanceUntilIdle()
 
             assertEquals(
                 RequestState.Done(WeatherRequestAction.LogOut),

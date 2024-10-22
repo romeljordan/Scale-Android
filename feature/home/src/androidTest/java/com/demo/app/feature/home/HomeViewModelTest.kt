@@ -9,15 +9,21 @@ import com.demo.app.feature.core.state.RequestState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.TaskCompletionSource
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
     private val currentWeather = CurrentWeather(
@@ -64,17 +70,27 @@ class HomeViewModelTest {
         )
     }
 
+    private lateinit var homeViewModel: HomeViewModel
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @Before
+    fun setup() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+
+        homeViewModel = HomeViewModel(
+            weatherUseCase = mockWeatherUseCase,
+            authUseCase = mockAuthUseCase,
+            fusedLocationProviderClient = mockFusedLocationProviderClient
+        )
+    }
+
+    @After
+    fun teardown() {
+        Dispatchers.resetMain()
+    }
+
     @Test
     fun fetch_current_weather_with_valid_result() =
         runTest {
-            val homeViewModel = HomeViewModel(
-                weatherUseCase = mockWeatherUseCase,
-                authUseCase = mockAuthUseCase,
-                fusedLocationProviderClient = mockFusedLocationProviderClient
-            )
-
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 homeViewModel.fetchState.collect()
                 homeViewModel.requestState.collect()
