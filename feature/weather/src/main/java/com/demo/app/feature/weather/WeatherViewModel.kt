@@ -48,7 +48,7 @@ class WeatherViewModel @Inject constructor(
         requestLocation()
     }
 
-    private fun fetchCurrentWeather(latitude: Double, longitude: Double) = viewModelScope.launch {
+    fun fetchCurrentWeather(latitude: Double, longitude: Double) = viewModelScope.launch {
         updateFetchState(FetchState.Loading)
         useCase.fetchOpenWeather(latitude, longitude).onSuccess {
             _currentWeather.emit(it)

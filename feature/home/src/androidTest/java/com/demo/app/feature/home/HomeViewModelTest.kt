@@ -1,11 +1,13 @@
 package com.demo.app.feature.home
 
+import android.location.Location
 import com.demo.app.domain.core.model.CurrentWeather
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
 import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestState
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.tasks.TaskCompletionSource
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -13,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
 class HomeViewModelTest {
@@ -48,7 +51,18 @@ class HomeViewModelTest {
             )
         }
 
-    private val mockFuseLocation = mock<FusedLocationProviderClient>()
+    private val mockFusedLocationProviderClient = mock<FusedLocationProviderClient> {
+        onBlocking { lastLocation }.doReturn(
+            TaskCompletionSource<Location>().apply {
+                setResult(
+                    Location("provider").apply {
+                        latitude = currentLocationLatitude
+                        longitude = currentLocationLongitude
+                    }
+                )
+            }.task
+        )
+    }
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -58,7 +72,7 @@ class HomeViewModelTest {
             val homeViewModel = HomeViewModel(
                 weatherUseCase = mockWeatherUseCase,
                 authUseCase = mockAuthUseCase,
-                fusedLocationProviderClient = mockFuseLocation
+                fusedLocationProviderClient = mockFusedLocationProviderClient
             )
 
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
