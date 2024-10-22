@@ -15,14 +15,14 @@ open class BaseViewModel : ViewModel() {
     private val _fetchState = MutableStateFlow<FetchState>(FetchState.Idle)
     val fetchState = _fetchState.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1_000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = FetchState.Idle
     )
 
     private val _requestState = MutableStateFlow<RequestState>(RequestState.Idle)
     val requestState = _requestState.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1_000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = RequestState.Idle
     )
 
