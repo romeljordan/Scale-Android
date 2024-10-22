@@ -1,4 +1,4 @@
-package com.demo.app.feature.home
+package com.demo.app.feature.weather
 
 import android.location.Location
 import com.demo.app.domain.core.model.CurrentWeather
@@ -9,11 +9,13 @@ import com.demo.app.feature.core.state.RequestState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.TaskCompletionSource
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -24,22 +26,29 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class HomeViewModelTest {
+class WeatherViewModelTest {
 
+    private val testUserId = 1
+    private val currentLocationLatitude = 1.0
+    private val currentLocationLongitude = 1.0
     private val currentWeather = CurrentWeather(
         city = "city",
         country = "country",
         temp = 20.0,
         type = "type",
         typeDescription = "desc",
-        icon = "",
+        icon = "icon",
         sunset = 0L,
         sunrise = 0L,
         dateMillis = 0L
     )
 
-    private val currentLocationLatitude = 14.599512
-    private val currentLocationLongitude = 120.984222
+    private val mockAuthUseCase =
+        mock<AuthUseCase> {
+            onBlocking { logout(testUserId) }.doReturn(
+                Result.success(true)
+            )
+        }
 
     private val mockWeatherUseCase =
         mock<OpenWeatherUseCase> {
@@ -50,14 +59,7 @@ class HomeViewModelTest {
             )
         }
 
-    private val mockAuthUseCase =
-        mock<AuthUseCase> {
-            onBlocking { log(1, "jsonString") }.thenReturn(
-                Result.success(true)
-            )
-        }
-
-    private val mockFusedLocationProviderClient = mock<FusedLocationProviderClient> {
+    private val fusedLocationProviderClient = mock<FusedLocationProviderClient> {
         onBlocking { lastLocation }.doReturn(
             TaskCompletionSource<Location>().apply {
                 setResult(
@@ -70,16 +72,16 @@ class HomeViewModelTest {
         )
     }
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var viewModel: WeatherViewModel
 
     @Before
     fun setup() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
 
-        homeViewModel = HomeViewModel(
-            weatherUseCase = mockWeatherUseCase,
+        viewModel = WeatherViewModel(
             authUseCase = mockAuthUseCase,
-            fusedLocationProviderClient = mockFusedLocationProviderClient
+            useCase = mockWeatherUseCase,
+            fusedLocationProviderClient = fusedLocationProviderClient
         )
     }
 
@@ -89,16 +91,42 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun fetch_current_weather_with_valid_result() =
+    fun initial_current_weather_is_empty() =
         runTest {
-            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                homeViewModel.fetchState.collect()
-                homeViewModel.requestState.collect()
+            assertEquals(FetchState.Idle, viewModel.fetchState.value)
+            assertEquals(null, viewModel.currentWeather.value)
+        }
+
+    @Test
+    fun fetch_current_weather_successfully() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher((testScheduler))) {
+                viewModel.fetchState.collect()
+                viewModel.currentWeather.collect()
             }
 
-            homeViewModel.fetchLocationAndLogWeather()
+            viewModel.fetchCurrentWeather(currentLocationLatitude, currentLocationLongitude)
 
-            assertEquals(FetchState.Idle, homeViewModel.fetchState.value)
-            assertEquals(RequestState.Idle, homeViewModel.requestState.value)
+            advanceUntilIdle()
+
+            assertEquals(FetchState.Idle, viewModel.fetchState.value)
+            assertNotNull(viewModel.currentWeather.value)
+            assertEquals(currentWeather.city, viewModel.currentWeather.value?.city)
+            assertEquals(currentWeather.country, viewModel.currentWeather.value?.country)
+        }
+
+    @Test
+    fun user_logs_out_successfully() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher((testScheduler))) {
+                viewModel.requestState.collect()
+            }
+
+            viewModel.logOut()
+
+            assertEquals(
+                RequestState.Done(WeatherRequestAction.LogOut),
+                viewModel.requestState.value
+            )
         }
 }

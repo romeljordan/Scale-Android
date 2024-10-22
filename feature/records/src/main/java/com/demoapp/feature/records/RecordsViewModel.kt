@@ -21,7 +21,7 @@ class RecordsViewModel @Inject constructor(
     private val _logs = MutableStateFlow<List<WeatherLog>>(emptyList())
     val logs = _logs.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1_000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = emptyList()
     )
 
