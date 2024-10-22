@@ -3,20 +3,17 @@ package com.demo.app.feature.login
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.app.data.core.Session
-import com.demo.app.domain.core.model.WeatherLog
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.feature.core.state.FetchState
 import com.demo.app.feature.core.state.RequestAction
 import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.core.vm.BaseViewModel
-import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import javax.inject.Inject
 
 enum class ScreenType {
@@ -36,7 +33,7 @@ class LoginViewModel @Inject constructor(
     private val _screenType = MutableStateFlow(ScreenType.Login)
     val screenType = _screenType.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1_000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = ScreenType.Login
     )
 
@@ -48,9 +45,7 @@ class LoginViewModel @Inject constructor(
         updateFetchState(FetchState.Loading)
         useCase.fetchCurrentSessionKey().onSuccess {
             updateFetchState(FetchState.Idle)
-            if (it.isBlank()) {
-                updateFetchState(FetchState.Idle)
-            } else {
+            if (it.isNotBlank()) {
                 updateRequestState(RequestState.Loading)
                 useCase.session(it.toInt()).onSuccess { session ->
                     Session.current = session
@@ -62,7 +57,7 @@ class LoginViewModel @Inject constructor(
             }
         }.onFailure {
             Log.e("ScaleLog", "Failed local session api call result: $it")
-            updateRequestState(RequestState.Idle)
+            updateFetchState(FetchState.Idle)
         }
     }
 

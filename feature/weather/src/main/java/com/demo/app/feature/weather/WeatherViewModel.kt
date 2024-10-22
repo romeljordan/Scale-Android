@@ -33,14 +33,14 @@ class WeatherViewModel @Inject constructor(
     private val _currentWeather = MutableStateFlow<CurrentWeather?>(null)
     val currentWeather = _currentWeather.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1_000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = null
     )
 
     private val _fetchedDate = MutableStateFlow(System.currentTimeMillis())
     val fetchedDate = _fetchedDate.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(1_000),
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = System.currentTimeMillis()
     )
 
