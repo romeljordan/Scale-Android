@@ -6,6 +6,7 @@ import com.demo.app.data.core.Session
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
 import com.demo.app.feature.core.state.FetchState
+import com.demo.app.feature.core.state.RequestState
 import com.demo.app.feature.core.vm.BaseViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.gson.Gson
@@ -31,12 +32,14 @@ class HomeViewModel @Inject constructor(
         Session.current?.let { session ->
             updateFetchState(FetchState.Loading)
             weatherUseCase.fetchOpenWeather(latitude, longitude).onSuccess { cWeather ->
+                updateFetchState(FetchState.Idle)
                 val jsonString = Gson().toJson(cWeather.toWeatherLog())
+                updateRequestState(RequestState.Loading)
                 authUseCase.log(session.userId, jsonString).onSuccess {
-                    updateFetchState(FetchState.Idle)
+                    updateRequestState(RequestState.Idle)
                 }.onFailure {
                     Log.e("ScaleLog", "Failed auth log api call result: $it")
-                    updateFetchState(FetchState.Error(it.message))
+                    updateRequestState(RequestState.Error(it.message))
                 }
             }.onFailure {
                 Log.e("ScaleLog", "Failed weather api call result: $it")

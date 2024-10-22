@@ -4,9 +4,11 @@ import com.demo.app.domain.core.model.CurrentWeather
 import com.demo.app.domain.core.usecase.AuthUseCase
 import com.demo.app.domain.core.usecase.OpenWeatherUseCase
 import com.demo.app.feature.core.state.FetchState
+import com.demo.app.feature.core.state.RequestState
 import com.google.android.gms.location.FusedLocationProviderClient
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -46,26 +48,27 @@ class HomeViewModelTest {
             )
         }
 
-    private val mockFuseLocation =
-        mock<FusedLocationProviderClient> {
-
-        }
-
-    private val homeViewModel = HomeViewModel(
-        weatherUseCase = mockWeatherUseCase,
-        authUseCase = mockAuthUseCase,
-        fusedLocationProviderClient = mockFuseLocation
-    )
+    private val mockFuseLocation = mock<FusedLocationProviderClient>()
 
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun fetch_current_weather_with_valid_result() =
         runTest {
+            val homeViewModel = HomeViewModel(
+                weatherUseCase = mockWeatherUseCase,
+                authUseCase = mockAuthUseCase,
+                fusedLocationProviderClient = mockFuseLocation
+            )
+
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-                homeViewModel.fetchLocationAndLogWeather()
+                homeViewModel.fetchState.collect()
+                homeViewModel.requestState.collect()
             }
 
-            assertEquals(FetchState.Idle, homeViewModel.fetchState)
+            homeViewModel.fetchLocationAndLogWeather()
+
+            assertEquals(FetchState.Idle, homeViewModel.fetchState.value)
+            assertEquals(RequestState.Idle, homeViewModel.requestState.value)
         }
 }
